@@ -158,7 +158,7 @@ main{padding:28px 16px 48px}.hero,.two{grid-template-columns:1fr;gap:0}.hero .sc
     <section class="hero">
       <div>
         <p class="label accent" id="kicker">&nbsp;</p>
-        <h1 id="headline">Loading…</h1>
+        <h1 id="headline">Loading the latest figures…</h1>
         <p class="lede" id="lede"></p>
       </div>
       <div class="score">
@@ -870,6 +870,7 @@ $("printReport").onclick = () => print();
 // ---------- Live updates from Supabase ----------
 function renderLiveBadge() {
   const live = dataSource === "supabase" && !uploadedFile;
+  if (!dataSource && !uploadedFile) return;  // nothing loaded yet
   $("live").hidden = false;
   $("live").classList.toggle("on", live && liveConnected);
   $("live").textContent = uploadedFile ? "Uploaded file"

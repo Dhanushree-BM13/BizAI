@@ -28,8 +28,14 @@ def load_live():
     while True:
         url = (f"{SUPABASE_URL}/rest/v1/{TABLE}?select=company,industry,date,revenue,expenses,project_success"
                f"&order=id&limit={PAGE}&offset={len(rows)}")
-        with urlopen(Request(url, headers={"apikey": SUPABASE_KEY}), timeout=8) as response:
-            batch = json.load(response)
+        for attempt in range(3):  # the connection is occasionally dropped, so try again before giving up
+            try:
+                with urlopen(Request(url, headers={"apikey": SUPABASE_KEY}), timeout=10) as response:
+                    batch = json.load(response)
+                break
+            except OSError:
+                if attempt == 2:
+                    raise
         rows += batch
         if len(batch) < PAGE:
             return pd.DataFrame(rows)
@@ -52,10 +58,21 @@ def index():
     return send_from_directory(app.static_folder, "index.html")
 
 
+_cache = {"key": None, "result": None}
+
+
+def analyse_cached(rows):
+    """Analysis is slow (about 0.3 s a company), so reuse the last result while the data is unchanged."""
+    key = pd.util.hash_pandas_object(rows, index=False).sum()
+    if key != _cache["key"]:
+        _cache.update(key=key, result=analyse(clean(rows)))
+    return _cache["result"]
+
+
 @app.get("/api/sample")
 def sample():
     rows, source = current_data()
-    response = jsonify(analyse(clean(rows)))
+    response = jsonify(analyse_cached(rows))
     response.headers["X-Data-Source"] = source  # the page shows whether the data is live
     return response
 

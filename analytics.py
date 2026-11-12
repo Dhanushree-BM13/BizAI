@@ -146,7 +146,7 @@ def find_unusual_months(revenue, expenses):
         np.r_[0, np.diff(expenses) / expenses[:-1]],
     ])
     X = (X - X.mean(0)) / (X.std(0) + 1e-9)
-    isolation = -IsolationForest(n_estimators=200, random_state=0).fit(X).score_samples(X)
+    isolation = -IsolationForest(n_estimators=100, random_state=0).fit(X).score_samples(X)
     revenue_trend = np.polyval(np.polyfit(t, revenue, 1), t)
     expense_trend = np.polyval(np.polyfit(t, expenses, 1), t)
     flags = []

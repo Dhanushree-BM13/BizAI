@@ -28,6 +28,31 @@ COMPANIES = [
     ("Narmada Finserv", "Financial Services", 2700, 0.012, 0.02, 0.26, 0.0),
     ("Thar Logistics", "Logistics", 960, 0.008, 0.05, 0.10, 0.0005),
     ("Chenab Telecom", "Telecom", 6400, 0.003, 0.02, 0.13, -0.0005),
+    ("Brahmaputra Steel", "Steel", 8900, 0.004, 0.06, 0.12, -0.0004),
+    ("Kanchenjunga Hotels", "Hospitality", 380, 0.011, 0.18, 0.18, 0.0),
+    ("Mahanadi Power", "Power Utilities", 5200, 0.005, 0.07, 0.19, 0.0),
+    ("Tapti Chemicals", "Chemicals", 1750, 0.006, 0.04, 0.15, -0.0006),
+    ("Satpura Agritech", "Agriculture", 290, 0.013, 0.20, 0.11, 0.0),
+    ("Kaziranga Airways", "Aviation", 4100, 0.009, 0.14, 0.05, 0.0004),
+    ("Palghat Paints", "Paints", 1150, 0.008, 0.08, 0.17, 0.0),
+    ("Shivalik Realty", "Real Estate", 960, 0.003, 0.10, 0.21, -0.0012),
+    ("Mysuru Silks", "Textiles", 145, 0.006, 0.15, 0.13, 0.0),
+    ("Indus Bank Tech", "Fintech", 520, 0.020, 0.02, 0.09, 0.002),
+    ("Coromandel Fertilisers", "Fertilisers", 2400, 0.004, 0.16, 0.10, 0.0),
+    ("Nalanda EdTech", "Education", 210, 0.016, 0.12, 0.14, -0.0015),
+    ("Sundarban Seafoods", "Food Exports", 330, 0.007, 0.11, 0.08, 0.0),
+    ("Ajanta Healthcare", "Hospitals", 1350, 0.010, 0.03, 0.16, 0.0),
+    ("Garuda Aerospace", "Defence", 1900, 0.012, 0.04, 0.20, 0.0),
+    ("Chambal Tyres", "Auto Components", 1600, 0.005, 0.06, 0.11, 0.0),
+    ("Lonavala Media", "Media", 470, -0.006, 0.08, 0.10, -0.001),
+    ("Kutch Salt Works", "Commodities", 95, 0.004, 0.13, 0.07, 0.0),
+    ("Vaigai Electronics", "Electronics", 2850, 0.014, 0.05, 0.09, 0.0006),
+    ("Hampi Gaming", "Gaming", 120, 0.022, 0.06, 0.24, -0.002),
+    ("Rann Wind Energy", "Renewable Energy", 640, 0.017, 0.12, 0.26, 0.0),
+    ("Periyar Rubber", "Rubber", 410, -0.003, 0.09, 0.09, -0.0005),
+    ("Darjeeling Tea Estates", "Plantations", 180, 0.002, 0.25, 0.12, 0.0),
+    ("Bengaluru Biotech", "Biotechnology", 760, 0.015, 0.03, 0.18, 0.0),
+    ("Mumbai Insure", "Insurance", 3600, 0.009, 0.02, 0.14, 0.0),
 ]
 
 
@@ -79,18 +104,30 @@ do $$ begin
 exception when duplicate_object then null;
 end $$;
 
-insert into public.financials (company, industry, date, revenue, expenses, project_success) values
-"""
+-- Each company: one value per month, oldest first
+insert into public.financials (company, industry, date, revenue, expenses, project_success)
+select c.company, c.industry, (date '{start}' + (m.i - 1) * interval '1 month')::date, m.r, m.e, m.s
+from (values
+""".replace("{start}", MONTHS[0].strftime("%Y-%m-%d"))
 
 
 def to_sql(data):
-    """The table, its security rules and the demo rows as one SQL script."""
+    """The table, its security rules and the demo rows as one SQL script.
+
+    Each company is one line holding its monthly values as arrays, which Postgres unpacks
+    into rows. This keeps the script short enough to paste into the Supabase SQL Editor.
+    """
     quote = lambda text: "'" + str(text).replace("'", "''") + "'"
-    values = ",\n".join(
-        f"({quote(r.Company)}, {quote(r.Industry)}, {quote(r.Date)}, {r.Revenue_INR_Cr}, {r.Expenses_INR_Cr}, {r.Project_Success_Rate_Pct})"
-        for r in data.itertuples())
-    return (SCHEMA + values + "\non conflict (company, date) do update set industry = excluded.industry, "
-            "revenue = excluded.revenue, expenses = excluded.expenses, project_success = excluded.project_success;\n")
+    array = lambda values: "'{" + ",".join(format(v, "g") for v in values) + "}'"
+    lines = []
+    for company, rows in data.groupby("Company", sort=False):
+        lines.append(f"({quote(company)},{quote(rows.Industry.iloc[0])},{array(rows.Revenue_INR_Cr)},"
+                     f"{array(rows.Expenses_INR_Cr)},{array(rows.Project_Success_Rate_Pct)})")
+    return (SCHEMA + ",\n".join(lines) +
+            "\n) as c(company, industry, rev, exp, succ)\n"
+            "cross join lateral unnest(c.rev::numeric[], c.exp::numeric[], c.succ::numeric[]) with ordinality as m(r, e, s, i)\n"
+            "on conflict (company, date) do update set industry = excluded.industry, revenue = excluded.revenue,\n"
+            "  expenses = excluded.expenses, project_success = excluded.project_success;\n")
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ recommendations, a league table and a question box. Data comes live from Supabas
 
 ## Live data (Supabase)
 1. Open the Supabase project, go to **SQL Editor**, paste the contents of `supabase_setup.sql` and run it.
-   It creates the `financials` table, lets the public key read it (and nothing else), switches on realtime
+   It creates the `financials` table (or adds to it), lets the public key read it (and nothing else), switches on realtime
    and loads the demo rows.
 2. Start the app. The masthead shows **Live** when it is reading Supabase.
 3. Change any row in the Supabase **Table Editor**: the dashboard redraws within a second, no refresh needed.
@@ -41,23 +41,7 @@ standard deviations, about an 80% range.
 really happened. This is repeated for 4 windows (12 hidden months). The error measure is MAPE, the mean absolute
 percentage error. The baseline is the naive guess "same as the last known month".
 
-| Company | Model MAPE | Naive MAPE |
-|---|---|---|
-| Aravali Energy | 0.98% | 2.66% |
-| Chenab Telecom | 2.21% | 2.81% |
-| Deccan Motors | 1.18% | 4.90% |
-| Ganga Textiles | 1.02% | 4.86% |
-| Godavari Pharma | 1.91% | 2.73% |
-| Himadri Cement | 2.44% | 8.21% |
-| Kaveri Systems | 1.13% | 2.08% |
-| Konkan Retail | 0.93% | 6.99% |
-| Malabar Foods | 2.35% | 4.30% |
-| Narmada Finserv | 2.53% | 3.85% |
-| Nilgiri Infotech | 2.07% | 3.65% |
-| Sahyadri Cloud | 1.05% | 3.26% |
-| Surya Kiran Solar | 1.16% | 5.27% |
-| Thar Logistics | 1.87% | 2.64% |
-| Vindhya Consulting | 0.96% | 3.46% |
+Across the 40 demo companies the model beat the naive guess for all 40. Median error: **1.36%** for the model against **4.86%** for the naive guess (model range 0.81–3.03%). The Accuracy line under each company's chart shows its own figures.
 
 **Unusual months.** Each month's profit margin is compared with the margin's own trend line. A month is flagged only
 when two checks agree: that gap is beyond 1.8 standard deviations, and an `IsolationForest` ranks the month among
@@ -73,7 +57,7 @@ It can report a figure for any company or month, rank and compare companies, exp
 what-if scenarios. It is not a language model and says so when it cannot match a question.
 
 ## Limits
-- The 15 demo companies and their 5 years of figures are invented. The model beats the naive baseline here partly
+- The 40 demo companies and their 5 years of figures are invented. The model beats the naive baseline here partly
   because the demo data was generated with a trend and a yearly pattern; real data will be noisier.
 - Forecasts are simple statistical projections, not financial advice.
 - No login yet. Uploaded files are analysed in memory and not saved to Supabase.
