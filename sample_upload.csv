@@ -1,0 +1,289 @@
+Company,Sector,Month,Sales_INR_Cr,Costs_INR_Cr,Project_Success_Pct
+Jaipur Gems & Jewels,Jewellery,2023-11-01,279.26,243.38,89.1
+Jaipur Gems & Jewels,Jewellery,2023-12-01,266.9,232.78,86.9
+Jaipur Gems & Jewels,Jewellery,2024-01-01,285.09,250.07,86.3
+Jaipur Gems & Jewels,Jewellery,2024-02-01,316.93,276.52,89.3
+Jaipur Gems & Jewels,Jewellery,2024-03-01,354.28,308.37,91.0
+Jaipur Gems & Jewels,Jewellery,2024-04-01,340.17,337.75,80.1
+Jaipur Gems & Jewels,Jewellery,2024-05-01,435.44,376.76,93.6
+Jaipur Gems & Jewels,Jewellery,2024-06-01,439.23,388.51,92.5
+Jaipur Gems & Jewels,Jewellery,2024-07-01,427.12,367.69,94.2
+Jaipur Gems & Jewels,Jewellery,2024-08-01,409.74,351.29,89.8
+Jaipur Gems & Jewels,Jewellery,2024-09-01,368.33,322.45,91.4
+Jaipur Gems & Jewels,Jewellery,2024-10-01,327.3,286.35,90.3
+Jaipur Gems & Jewels,Jewellery,2024-11-01,310.12,270.11,94.3
+Jaipur Gems & Jewels,Jewellery,2024-12-01,260.28,260.88,72.3
+Jaipur Gems & Jewels,Jewellery,2025-01-01,270.2,265.81,76.7
+Jaipur Gems & Jewels,Jewellery,2025-02-01,339.59,295.19,91.8
+Jaipur Gems & Jewels,Jewellery,2025-03-01,384.62,336.23,96.2
+Jaipur Gems & Jewels,Jewellery,2025-04-01,429.56,376.81,92.5
+Jaipur Gems & Jewels,Jewellery,2025-05-01,480.22,420.1,95.4
+Jaipur Gems & Jewels,Jewellery,2025-06-01,491.15,432.71,94.3
+Jaipur Gems & Jewels,Jewellery,2025-07-01,471.14,408.07,94.2
+Jaipur Gems & Jewels,Jewellery,2025-08-01,451.47,391.79,88.3
+Jaipur Gems & Jewels,Jewellery,2025-09-01,416.17,357.94,92.9
+Jaipur Gems & Jewels,Jewellery,2025-10-01,364.82,320.99,90.2
+Jaipur Gems & Jewels,Jewellery,2025-11-01,341.02,296.8,90.5
+Jaipur Gems & Jewels,Jewellery,2025-12-01,333.34,291.93,86.6
+Jaipur Gems & Jewels,Jewellery,2026-01-01,346.72,305.76,88.8
+Jaipur Gems & Jewels,Jewellery,2026-02-01,382.71,331.63,92.3
+Jaipur Gems & Jewels,Jewellery,2026-03-01,433.43,377.41,89.6
+Jaipur Gems & Jewels,Jewellery,2026-04-01,472.07,403.18,87.8
+Jaipur Gems & Jewels,Jewellery,2026-05-01,533.64,466.9,91.3
+Jaipur Gems & Jewels,Jewellery,2026-06-01,539.09,461.16,89.5
+Jaipur Gems & Jewels,Jewellery,2026-07-01,535.74,470.81,92.5
+Jaipur Gems & Jewels,Jewellery,2026-08-01,514.78,443.38,86.4
+Jaipur Gems & Jewels,Jewellery,2026-09-01,457.67,401.3,90.8
+Jaipur Gems & Jewels,Jewellery,2026-10-01,411.99,359.56,91.7
+Goa Coastal Resorts,Hospitality,2023-11-01,112.01,93.89,92.0
+Goa Coastal Resorts,Hospitality,2023-12-01,107.46,89.44,93.0
+Goa Coastal Resorts,Hospitality,2024-01-01,113.96,94.12,90.7
+Goa Coastal Resorts,Hospitality,2024-02-01,135.26,114.08,91.2
+Goa Coastal Resorts,Hospitality,2024-03-01,154.72,127.21,91.5
+Goa Coastal Resorts,Hospitality,2024-04-01,181.69,151.09,88.5
+Goa Coastal Resorts,Hospitality,2024-05-01,206.01,171.67,92.8
+Goa Coastal Resorts,Hospitality,2024-06-01,214.42,175.63,89.7
+Goa Coastal Resorts,Hospitality,2024-07-01,210.86,175.8,89.7
+Goa Coastal Resorts,Hospitality,2024-08-01,190.87,157.79,91.5
+Goa Coastal Resorts,Hospitality,2024-09-01,170.36,141.53,88.0
+Goa Coastal Resorts,Hospitality,2024-10-01,144.83,118.97,89.5
+Goa Coastal Resorts,Hospitality,2024-11-01,125.1,104.52,93.7
+Goa Coastal Resorts,Hospitality,2024-12-01,120.33,98.79,86.6
+Goa Coastal Resorts,Hospitality,2025-01-01,131.21,110.53,97.9
+Goa Coastal Resorts,Hospitality,2025-02-01,150.28,123.71,93.6
+Goa Coastal Resorts,Hospitality,2025-03-01,180.05,147.39,87.3
+Goa Coastal Resorts,Hospitality,2025-04-01,210.92,174.62,90.2
+Goa Coastal Resorts,Hospitality,2025-05-01,232.49,192.19,91.1
+Goa Coastal Resorts,Hospitality,2025-06-01,243.45,201.7,89.4
+Goa Coastal Resorts,Hospitality,2025-07-01,241.95,199.1,95.2
+Goa Coastal Resorts,Hospitality,2025-08-01,218.55,181.26,86.4
+Goa Coastal Resorts,Hospitality,2025-09-01,196.58,165.02,93.8
+Goa Coastal Resorts,Hospitality,2025-10-01,165.15,136.14,89.0
+Goa Coastal Resorts,Hospitality,2025-11-01,145.77,122.08,91.5
+Goa Coastal Resorts,Hospitality,2025-12-01,142.07,117.81,92.6
+Goa Coastal Resorts,Hospitality,2026-01-01,150.69,125.14,88.5
+Goa Coastal Resorts,Hospitality,2026-02-01,175.81,144.15,91.5
+Goa Coastal Resorts,Hospitality,2026-03-01,212.6,174.0,87.5
+Goa Coastal Resorts,Hospitality,2026-04-01,246.79,206.71,91.7
+Goa Coastal Resorts,Hospitality,2026-05-01,263.76,215.1,92.7
+Goa Coastal Resorts,Hospitality,2026-06-01,286.8,238.84,91.8
+Goa Coastal Resorts,Hospitality,2026-07-01,276.0,228.79,92.3
+Goa Coastal Resorts,Hospitality,2026-08-01,232.46,211.1,74.5
+Goa Coastal Resorts,Hospitality,2026-09-01,223.83,185.79,88.4
+Goa Coastal Resorts,Hospitality,2026-10-01,192.76,160.73,89.4
+Pune Precision Tools,Engineering,2023-11-01,584.7,524.25,90.3
+Pune Precision Tools,Engineering,2023-12-01,589.4,516.14,90.3
+Pune Precision Tools,Engineering,2024-01-01,592.38,513.65,88.1
+Pune Precision Tools,Engineering,2024-02-01,616.61,543.77,90.1
+Pune Precision Tools,Engineering,2024-03-01,631.33,551.24,89.7
+Pune Precision Tools,Engineering,2024-04-01,643.92,570.61,89.3
+Pune Precision Tools,Engineering,2024-05-01,659.53,574.21,88.8
+Pune Precision Tools,Engineering,2024-06-01,656.13,579.47,90.3
+Pune Precision Tools,Engineering,2024-07-01,658.79,576.02,88.2
+Pune Precision Tools,Engineering,2024-08-01,650.65,570.95,87.7
+Pune Precision Tools,Engineering,2024-09-01,651.94,572.99,88.1
+Pune Precision Tools,Engineering,2024-10-01,643.68,575.84,89.6
+Pune Precision Tools,Engineering,2024-11-01,630.84,553.72,89.3
+Pune Precision Tools,Engineering,2024-12-01,625.84,549.31,89.6
+Pune Precision Tools,Engineering,2025-01-01,649.78,578.82,94.4
+Pune Precision Tools,Engineering,2025-02-01,653.59,691.65,69.7
+Pune Precision Tools,Engineering,2025-03-01,671.07,695.03,72.4
+Pune Precision Tools,Engineering,2025-04-01,685.77,605.43,86.9
+Pune Precision Tools,Engineering,2025-05-01,683.97,603.27,87.1
+Pune Precision Tools,Engineering,2025-06-01,719.57,629.35,85.9
+Pune Precision Tools,Engineering,2025-07-01,714.65,632.62,93.9
+Pune Precision Tools,Engineering,2025-08-01,698.62,708.39,73.7
+Pune Precision Tools,Engineering,2025-09-01,690.05,601.41,90.4
+Pune Precision Tools,Engineering,2025-10-01,686.49,601.35,93.5
+Pune Precision Tools,Engineering,2025-11-01,682.68,592.08,91.7
+Pune Precision Tools,Engineering,2025-12-01,684.57,614.67,91.3
+Pune Precision Tools,Engineering,2026-01-01,686.95,601.32,91.8
+Pune Precision Tools,Engineering,2026-02-01,696.88,610.68,89.7
+Pune Precision Tools,Engineering,2026-03-01,733.25,640.85,91.5
+Pune Precision Tools,Engineering,2026-04-01,737.83,643.86,86.4
+Pune Precision Tools,Engineering,2026-05-01,750.16,655.94,89.6
+Pune Precision Tools,Engineering,2026-06-01,756.5,665.36,93.0
+Pune Precision Tools,Engineering,2026-07-01,766.08,675.79,92.2
+Pune Precision Tools,Engineering,2026-08-01,764.64,677.47,95.0
+Pune Precision Tools,Engineering,2026-09-01,745.74,660.54,89.3
+Pune Precision Tools,Engineering,2026-10-01,738.68,660.28,89.0
+Hyderabad Health Labs,Diagnostics,2023-11-01,269.1,211.86,94.0
+Hyderabad Health Labs,Diagnostics,2023-12-01,265.24,208.65,87.8
+Hyderabad Health Labs,Diagnostics,2024-01-01,274.71,217.83,90.0
+Hyderabad Health Labs,Diagnostics,2024-02-01,282.6,224.0,89.7
+Hyderabad Health Labs,Diagnostics,2024-03-01,301.4,240.24,91.0
+Hyderabad Health Labs,Diagnostics,2024-04-01,309.76,246.57,90.9
+Hyderabad Health Labs,Diagnostics,2024-05-01,317.97,254.02,91.0
+Hyderabad Health Labs,Diagnostics,2024-06-01,329.46,259.64,91.3
+Hyderabad Health Labs,Diagnostics,2024-07-01,326.08,257.59,87.1
+Hyderabad Health Labs,Diagnostics,2024-08-01,331.84,264.54,93.2
+Hyderabad Health Labs,Diagnostics,2024-09-01,324.94,257.36,89.1
+Hyderabad Health Labs,Diagnostics,2024-10-01,317.0,252.7,88.4
+Hyderabad Health Labs,Diagnostics,2024-11-01,321.98,261.35,93.5
+Hyderabad Health Labs,Diagnostics,2024-12-01,323.86,260.87,94.7
+Hyderabad Health Labs,Diagnostics,2025-01-01,328.76,265.33,87.6
+Hyderabad Health Labs,Diagnostics,2025-02-01,342.77,274.6,94.0
+Hyderabad Health Labs,Diagnostics,2025-03-01,357.84,287.11,93.8
+Hyderabad Health Labs,Diagnostics,2025-04-01,364.71,298.51,93.2
+Hyderabad Health Labs,Diagnostics,2025-05-01,378.06,304.64,89.6
+Hyderabad Health Labs,Diagnostics,2025-06-01,398.8,322.92,87.8
+Hyderabad Health Labs,Diagnostics,2025-07-01,391.91,317.56,94.0
+Hyderabad Health Labs,Diagnostics,2025-08-01,396.61,320.22,89.2
+Hyderabad Health Labs,Diagnostics,2025-09-01,386.65,313.73,91.7
+Hyderabad Health Labs,Diagnostics,2025-10-01,389.33,316.69,91.9
+Hyderabad Health Labs,Diagnostics,2025-11-01,387.29,313.66,89.7
+Hyderabad Health Labs,Diagnostics,2025-12-01,388.27,320.76,91.3
+Hyderabad Health Labs,Diagnostics,2026-01-01,390.4,315.2,91.6
+Hyderabad Health Labs,Diagnostics,2026-02-01,411.25,329.79,89.3
+Hyderabad Health Labs,Diagnostics,2026-03-01,428.56,346.14,97.5
+Hyderabad Health Labs,Diagnostics,2026-04-01,442.31,362.8,89.2
+Hyderabad Health Labs,Diagnostics,2026-05-01,446.03,409.53,76.8
+Hyderabad Health Labs,Diagnostics,2026-06-01,464.41,383.01,94.0
+Hyderabad Health Labs,Diagnostics,2026-07-01,474.58,390.9,89.0
+Hyderabad Health Labs,Diagnostics,2026-08-01,465.2,385.23,88.8
+Hyderabad Health Labs,Diagnostics,2026-09-01,468.68,392.56,91.3
+Hyderabad Health Labs,Diagnostics,2026-10-01,462.23,384.61,96.4
+Kolkata Craft Breweries,Beverages,2023-11-01,81.87,73.89,87.7
+Kolkata Craft Breweries,Beverages,2023-12-01,81.72,73.48,91.3
+Kolkata Craft Breweries,Beverages,2024-01-01,83.04,74.98,91.5
+Kolkata Craft Breweries,Beverages,2024-02-01,93.26,83.19,92.5
+Kolkata Craft Breweries,Beverages,2024-03-01,101.07,91.11,88.2
+Kolkata Craft Breweries,Beverages,2024-04-01,109.1,98.22,88.4
+Kolkata Craft Breweries,Beverages,2024-05-01,116.43,104.49,89.0
+Kolkata Craft Breweries,Beverages,2024-06-01,126.97,113.52,88.8
+Kolkata Craft Breweries,Beverages,2024-07-01,124.52,111.3,92.7
+Kolkata Craft Breweries,Beverages,2024-08-01,121.21,108.04,92.5
+Kolkata Craft Breweries,Beverages,2024-09-01,113.39,101.6,93.5
+Kolkata Craft Breweries,Beverages,2024-10-01,108.07,97.67,91.5
+Kolkata Craft Breweries,Beverages,2024-11-01,100.17,88.25,92.5
+Kolkata Craft Breweries,Beverages,2024-12-01,102.81,91.32,89.4
+Kolkata Craft Breweries,Beverages,2025-01-01,103.91,92.47,91.1
+Kolkata Craft Breweries,Beverages,2025-02-01,113.95,101.15,92.3
+Kolkata Craft Breweries,Beverages,2025-03-01,127.23,113.56,88.0
+Kolkata Craft Breweries,Beverages,2025-04-01,137.2,122.11,90.9
+Kolkata Craft Breweries,Beverages,2025-05-01,148.9,131.35,96.7
+Kolkata Craft Breweries,Beverages,2025-06-01,153.16,133.38,89.6
+Kolkata Craft Breweries,Beverages,2025-07-01,156.24,137.52,89.8
+Kolkata Craft Breweries,Beverages,2025-08-01,151.32,132.93,94.8
+Kolkata Craft Breweries,Beverages,2025-09-01,138.36,122.86,89.7
+Kolkata Craft Breweries,Beverages,2025-10-01,129.53,134.26,71.7
+Kolkata Craft Breweries,Beverages,2025-11-01,123.57,108.85,93.0
+Kolkata Craft Breweries,Beverages,2025-12-01,127.16,111.76,91.6
+Kolkata Craft Breweries,Beverages,2026-01-01,133.0,133.23,72.7
+Kolkata Craft Breweries,Beverages,2026-02-01,141.71,124.41,90.6
+Kolkata Craft Breweries,Beverages,2026-03-01,155.87,136.11,90.0
+Kolkata Craft Breweries,Beverages,2026-04-01,168.36,148.36,93.5
+Kolkata Craft Breweries,Beverages,2026-05-01,182.82,160.82,94.2
+Kolkata Craft Breweries,Beverages,2026-06-01,191.13,166.77,90.8
+Kolkata Craft Breweries,Beverages,2026-07-01,189.63,166.95,94.3
+Kolkata Craft Breweries,Beverages,2026-08-01,183.48,160.95,92.6
+Kolkata Craft Breweries,Beverages,2026-09-01,158.38,152.9,71.8
+Kolkata Craft Breweries,Beverages,2026-10-01,160.29,160.03,73.1
+Lucknow Leather Works,Leather Goods,2023-11-01,109.57,98.26,89.7
+Lucknow Leather Works,Leather Goods,2023-12-01,108.97,99.71,88.1
+Lucknow Leather Works,Leather Goods,2024-01-01,105.41,95.37,89.1
+Lucknow Leather Works,Leather Goods,2024-02-01,110.02,99.46,95.5
+Lucknow Leather Works,Leather Goods,2024-03-01,118.44,109.25,93.6
+Lucknow Leather Works,Leather Goods,2024-04-01,107.73,111.88,74.5
+Lucknow Leather Works,Leather Goods,2024-05-01,129.54,118.35,85.4
+Lucknow Leather Works,Leather Goods,2024-06-01,127.17,116.17,91.1
+Lucknow Leather Works,Leather Goods,2024-07-01,124.97,114.93,93.9
+Lucknow Leather Works,Leather Goods,2024-08-01,120.93,109.87,88.8
+Lucknow Leather Works,Leather Goods,2024-09-01,116.07,106.94,89.5
+Lucknow Leather Works,Leather Goods,2024-10-01,109.58,100.6,90.7
+Lucknow Leather Works,Leather Goods,2024-11-01,105.72,96.32,94.1
+Lucknow Leather Works,Leather Goods,2024-12-01,103.15,94.48,90.8
+Lucknow Leather Works,Leather Goods,2025-01-01,103.45,112.0,75.2
+Lucknow Leather Works,Leather Goods,2025-02-01,106.35,114.23,70.8
+Lucknow Leather Works,Leather Goods,2025-03-01,112.83,103.44,88.8
+Lucknow Leather Works,Leather Goods,2025-04-01,114.39,106.03,92.9
+Lucknow Leather Works,Leather Goods,2025-05-01,121.43,127.84,76.3
+Lucknow Leather Works,Leather Goods,2025-06-01,120.07,112.53,91.5
+Lucknow Leather Works,Leather Goods,2025-07-01,117.77,109.13,92.0
+Lucknow Leather Works,Leather Goods,2025-08-01,115.52,106.68,87.6
+Lucknow Leather Works,Leather Goods,2025-09-01,111.19,101.78,88.4
+Lucknow Leather Works,Leather Goods,2025-10-01,103.25,95.07,91.9
+Lucknow Leather Works,Leather Goods,2025-11-01,96.93,88.97,91.5
+Lucknow Leather Works,Leather Goods,2025-12-01,97.9,89.64,85.1
+Lucknow Leather Works,Leather Goods,2026-01-01,98.12,89.42,93.4
+Lucknow Leather Works,Leather Goods,2026-02-01,104.39,96.9,86.3
+Lucknow Leather Works,Leather Goods,2026-03-01,105.88,99.35,92.2
+Lucknow Leather Works,Leather Goods,2026-04-01,111.83,104.2,91.8
+Lucknow Leather Works,Leather Goods,2026-05-01,115.46,107.33,93.2
+Lucknow Leather Works,Leather Goods,2026-06-01,114.61,105.76,93.3
+Lucknow Leather Works,Leather Goods,2026-07-01,114.17,106.23,92.2
+Lucknow Leather Works,Leather Goods,2026-08-01,109.51,102.06,93.4
+Lucknow Leather Works,Leather Goods,2026-09-01,104.44,98.41,89.7
+Lucknow Leather Works,Leather Goods,2026-10-01,98.86,92.08,86.7
+Coimbatore Pumps,Industrial Pumps,2023-11-01,837.59,723.19,87.6
+Coimbatore Pumps,Industrial Pumps,2023-12-01,820.62,703.75,91.7
+Coimbatore Pumps,Industrial Pumps,2024-01-01,830.44,718.92,90.2
+Coimbatore Pumps,Industrial Pumps,2024-02-01,843.37,719.5,97.3
+Coimbatore Pumps,Industrial Pumps,2024-03-01,892.52,767.65,91.3
+Coimbatore Pumps,Industrial Pumps,2024-04-01,916.86,789.07,90.4
+Coimbatore Pumps,Industrial Pumps,2024-05-01,942.23,814.93,92.2
+Coimbatore Pumps,Industrial Pumps,2024-06-01,954.8,822.44,93.8
+Coimbatore Pumps,Industrial Pumps,2024-07-01,959.95,822.55,88.4
+Coimbatore Pumps,Industrial Pumps,2024-08-01,925.39,794.11,90.2
+Coimbatore Pumps,Industrial Pumps,2024-09-01,903.79,771.97,93.3
+Coimbatore Pumps,Industrial Pumps,2024-10-01,899.79,772.47,89.5
+Coimbatore Pumps,Industrial Pumps,2024-11-01,875.49,748.3,85.9
+Coimbatore Pumps,Industrial Pumps,2024-12-01,850.12,738.64,87.2
+Coimbatore Pumps,Industrial Pumps,2025-01-01,868.94,754.14,92.0
+Coimbatore Pumps,Industrial Pumps,2025-02-01,882.48,767.68,92.7
+Coimbatore Pumps,Industrial Pumps,2025-03-01,954.19,815.41,90.5
+Coimbatore Pumps,Industrial Pumps,2025-04-01,1002.57,879.49,94.5
+Coimbatore Pumps,Industrial Pumps,2025-05-01,1015.6,889.1,85.8
+Coimbatore Pumps,Industrial Pumps,2025-06-01,1031.53,888.79,91.0
+Coimbatore Pumps,Industrial Pumps,2025-07-01,1014.94,878.72,93.6
+Coimbatore Pumps,Industrial Pumps,2025-08-01,1015.14,874.31,88.3
+Coimbatore Pumps,Industrial Pumps,2025-09-01,986.74,861.05,91.4
+Coimbatore Pumps,Industrial Pumps,2025-10-01,931.48,807.27,92.5
+Coimbatore Pumps,Industrial Pumps,2025-11-01,931.1,800.36,86.0
+Coimbatore Pumps,Industrial Pumps,2025-12-01,942.08,815.27,89.3
+Coimbatore Pumps,Industrial Pumps,2026-01-01,920.98,791.69,88.9
+Coimbatore Pumps,Industrial Pumps,2026-02-01,845.1,845.75,77.5
+Coimbatore Pumps,Industrial Pumps,2026-03-01,1019.13,874.46,91.5
+Coimbatore Pumps,Industrial Pumps,2026-04-01,1050.86,894.9,89.1
+Coimbatore Pumps,Industrial Pumps,2026-05-01,1068.12,921.76,86.8
+Coimbatore Pumps,Industrial Pumps,2026-06-01,1099.0,945.43,92.0
+Coimbatore Pumps,Industrial Pumps,2026-07-01,1080.72,934.25,95.0
+Coimbatore Pumps,Industrial Pumps,2026-08-01,1036.58,902.72,88.1
+Coimbatore Pumps,Industrial Pumps,2026-09-01,1023.1,887.11,93.8
+Coimbatore Pumps,Industrial Pumps,2026-10-01,977.86,830.01,87.6
+Shillong Coffee Co,Food & Beverages,2023-11-01,36.97,29.72,91.1
+Shillong Coffee Co,Food & Beverages,2023-12-01,36.9,29.94,90.5
+Shillong Coffee Co,Food & Beverages,2024-01-01,38.89,31.79,89.2
+Shillong Coffee Co,Food & Beverages,2024-02-01,42.26,34.4,90.1
+Shillong Coffee Co,Food & Beverages,2024-03-01,45.39,36.53,93.8
+Shillong Coffee Co,Food & Beverages,2024-04-01,45.4,40.64,74.3
+Shillong Coffee Co,Food & Beverages,2024-05-01,51.39,40.68,90.7
+Shillong Coffee Co,Food & Beverages,2024-06-01,54.08,43.53,93.7
+Shillong Coffee Co,Food & Beverages,2024-07-01,54.44,44.24,89.2
+Shillong Coffee Co,Food & Beverages,2024-08-01,52.46,42.45,92.7
+Shillong Coffee Co,Food & Beverages,2024-09-01,51.49,41.97,94.5
+Shillong Coffee Co,Food & Beverages,2024-10-01,49.31,40.54,90.9
+Shillong Coffee Co,Food & Beverages,2024-11-01,48.05,38.15,95.2
+Shillong Coffee Co,Food & Beverages,2024-12-01,48.37,39.17,91.4
+Shillong Coffee Co,Food & Beverages,2025-01-01,49.98,40.33,87.5
+Shillong Coffee Co,Food & Beverages,2025-02-01,52.79,51.02,72.3
+Shillong Coffee Co,Food & Beverages,2025-03-01,58.02,47.11,90.7
+Shillong Coffee Co,Food & Beverages,2025-04-01,62.34,50.34,95.5
+Shillong Coffee Co,Food & Beverages,2025-05-01,66.21,53.91,91.8
+Shillong Coffee Co,Food & Beverages,2025-06-01,70.16,56.76,85.9
+Shillong Coffee Co,Food & Beverages,2025-07-01,68.51,55.58,93.0
+Shillong Coffee Co,Food & Beverages,2025-08-01,66.27,53.66,87.8
+Shillong Coffee Co,Food & Beverages,2025-09-01,64.69,52.35,94.0
+Shillong Coffee Co,Food & Beverages,2025-10-01,62.92,51.78,92.1
+Shillong Coffee Co,Food & Beverages,2025-11-01,59.72,48.95,95.4
+Shillong Coffee Co,Food & Beverages,2025-12-01,61.47,50.14,93.9
+Shillong Coffee Co,Food & Beverages,2026-01-01,61.69,50.37,89.3
+Shillong Coffee Co,Food & Beverages,2026-02-01,66.97,54.27,93.4
+Shillong Coffee Co,Food & Beverages,2026-03-01,73.2,59.49,85.9
+Shillong Coffee Co,Food & Beverages,2026-04-01,79.19,64.18,92.5
+Shillong Coffee Co,Food & Beverages,2026-05-01,84.6,69.03,92.0
+Shillong Coffee Co,Food & Beverages,2026-06-01,87.18,71.37,92.3
+Shillong Coffee Co,Food & Beverages,2026-07-01,86.3,69.55,90.7
+Shillong Coffee Co,Food & Beverages,2026-08-01,86.79,70.79,88.6
+Shillong Coffee Co,Food & Beverages,2026-09-01,81.86,65.81,92.1
+Shillong Coffee Co,Food & Beverages,2026-10-01,78.81,70.63,77.5

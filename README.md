@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/scikit--learn-1.9-17130E?style=flat-square&logo=scikitlearn&logoColor=F3EEE3" alt="scikit-learn 1.9">
   <img src="https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth-17130E?style=flat-square&logo=supabase&logoColor=F3EEE3" alt="Supabase">
   <img src="https://img.shields.io/badge/Vercel-ready-17130E?style=flat-square&logo=vercel&logoColor=F3EEE3" alt="Vercel ready">
-  <img src="https://img.shields.io/badge/tests-11%20passing-C2380F?style=flat-square" alt="11 tests passing">
+  <img src="https://img.shields.io/badge/tests-12%20passing-C2380F?style=flat-square" alt="12 tests passing">
 </p>
 
 <p align="center">
@@ -295,6 +295,7 @@ BizAI/
 │   └── seed.sql         Demo data (generated)
 ├── generate_data.py     Builds financial_data.csv and supabase/seed.sql
 ├── financial_data.csv   Demo data for local testing
+├── sample_upload.csv    8 new companies for trying the upload
 ├── test_analytics.py    Automated tests
 ├── assets/              README graphics
 ├── requirements.txt     Pinned dependencies
@@ -309,7 +310,7 @@ BizAI/
 |---|---|:---:|---|
 | `GET` | `/api/sample` | ✓ | Full analysis of the live data; `X-Data-Source` header is `supabase` or `csv` |
 | `POST` | `/api/analyze` | ✓ | Analysis of an uploaded file (field `file`, CSV or Excel, up to 4 MB) |
-| `GET` | `/api/sample.csv` | | Download the demo file to see the expected columns |
+| `GET` | `/api/sample.csv` | | Download a sample file of 8 companies not in the database, for trying the upload |
 | `GET` | `/api/config` | | Supabase details the pages need for sign-in and live updates |
 
 Uploads need **Company**, **Date**, **Revenue** and **Expenses** columns; **Industry** and **Project_Success** are
@@ -323,8 +324,8 @@ optional. Each company needs at least six months of data.
 python test_analytics.py
 ```
 
-Eleven tests cover forecasting, back-testing, anomaly detection, input validation, scoring without optional columns,
-repeatable demo data, the seed script, every API endpoint, upload limits and the sign-in requirement.
+Twelve tests cover forecasting, back-testing, anomaly detection, input validation, scoring without optional columns,
+repeatable demo data, the seed script, the upload sample, every API endpoint, upload limits and the sign-in requirement.
 
 ## Limitations
 

@@ -132,8 +132,8 @@ def config():
 
 @app.get("/api/sample.csv")
 def sample_file():
-    """Lets users download the demo file to see the expected columns."""
-    return send_from_directory(BASE, "financial_data.csv", as_attachment=True)
+    """A file of companies not in the database, for trying the upload."""
+    return send_from_directory(BASE, "sample_upload.csv", as_attachment=True, download_name="bizai_sample_upload.csv")
 
 
 @app.errorhandler(413)

@@ -6,7 +6,7 @@ import pandas as pd
 
 from analytics import analyse, backtest, clean, find_unusual_months, forecast
 from app import app
-from generate_data import COMPANIES, build, to_seed_sql
+from generate_data import COMPANIES, UPLOAD_COMPANIES, build, build_upload_sample, to_seed_sql
 
 app.config["USE_SUPABASE"] = False  # tests use the bundled CSV, no network
 
@@ -76,7 +76,7 @@ def test_server_endpoints():
     assert client.get("/").status_code == 200
     assert len(client.get("/api/sample").get_json()) == len(COMPANIES)
     assert client.get("/api/sample").headers["X-Data-Source"] == "csv" and client.get("/api/config").get_json() == {}
-    assert client.get("/api/sample.csv").data.startswith(b"Date,Company")
+    assert client.get("/api/sample.csv").data.startswith(b"Company,Sector,Month")
     assert client.post("/api/analyze").status_code == 400
     big = client.post("/api/analyze", data={"file": (io.BytesIO(b"x" * (5 * 1024 * 1024)), "big.csv")})
     assert big.status_code == 413 and "4 MB" in big.get_json()["error"]
@@ -84,6 +84,15 @@ def test_server_endpoints():
     assert bad.status_code == 400 and "Missing columns" in bad.get_json()["error"]
     good = client.post("/api/analyze", data={"file": (io.BytesIO(build().to_csv(index=False).encode()), "ok.csv")})
     assert good.status_code == 200 and len(good.get_json()) == len(COMPANIES)
+
+
+def test_upload_sample_brings_new_companies():
+    client = app.test_client()
+    csv = build_upload_sample().to_csv(index=False).encode()
+    result = client.post("/api/analyze", data={"file": (io.BytesIO(csv), "upload.csv")}).get_json()
+    assert set(result) == {c[0] for c in UPLOAD_COMPANIES}
+    assert not set(result) & {c[0] for c in COMPANIES}
+    assert all(company["industry"] != "Uploaded data" and company["backtest"] for company in result.values())
 
 
 def test_data_needs_sign_in_when_supabase_is_on():

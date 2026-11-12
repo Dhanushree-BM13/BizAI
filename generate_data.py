@@ -69,11 +69,11 @@ def normal(name, t, slot):
     return (sum(uniform(name, t, slot + i) for i in range(4)) - 2) * math.sqrt(3)
 
 
-def build():
+def build(companies=COMPANIES, months=MONTHS):
     """Every company's monthly figures. supabase/seed.sql uses the same formula."""
     rows = []
-    for name, industry, start, growth, swing, margin, drift in COMPANIES:
-        for t, date in enumerate(MONTHS):
+    for name, industry, start, growth, swing, margin, drift in companies:
+        for t, date in enumerate(months):
             season = math.sin(2 * math.pi * (date.month - 3) / 12)
             revenue = start * (1 + growth) ** t * (1 + swing * season) * (1 + 0.012 * normal(name, t, 0))
             expenses = revenue * (1 - margin - drift * t) * (1 + 0.008 * normal(name, t, 4))
@@ -161,9 +161,33 @@ on conflict (company_id, month) do update
 """
 
 
+# A separate file for trying the upload: companies that are not in the database, three years
+# of months, and different column names, to show the upload reads any matching layout.
+UPLOAD_COMPANIES = [
+    ("Jaipur Gems & Jewels", "Jewellery", 340, 0.009, 0.22, 0.13, 0.0),
+    ("Goa Coastal Resorts", "Hospitality", 150, 0.012, 0.30, 0.17, 0.0),
+    ("Pune Precision Tools", "Engineering", 610, 0.006, 0.04, 0.12, 0.0),
+    ("Hyderabad Health Labs", "Diagnostics", 280, 0.015, 0.05, 0.21, -0.001),
+    ("Kolkata Craft Breweries", "Beverages", 95, 0.018, 0.16, 0.10, 0.0008),
+    ("Lucknow Leather Works", "Leather Goods", 120, -0.004, 0.10, 0.09, -0.0006),
+    ("Coimbatore Pumps", "Industrial Pumps", 870, 0.005, 0.07, 0.14, 0.0),
+    ("Shillong Coffee Co", "Food & Beverages", 42, 0.020, 0.12, 0.19, 0.0),
+]
+UPLOAD_MONTHS = pd.date_range(end="2026-10-01", periods=36, freq="MS")
+
+
+def build_upload_sample():
+    """The upload sample, with the alternative column names the app also accepts."""
+    return build(UPLOAD_COMPANIES, UPLOAD_MONTHS).rename(columns={
+        "Date": "Month", "Industry": "Sector", "Revenue_INR_Cr": "Sales_INR_Cr",
+        "Expenses_INR_Cr": "Costs_INR_Cr", "Project_Success_Rate_Pct": "Project_Success_Pct",
+    })[["Company", "Sector", "Month", "Sales_INR_Cr", "Costs_INR_Cr", "Project_Success_Pct"]]
+
+
 if __name__ == "__main__":
     folder = Path(__file__).parent
     data = build()
     data.to_csv(folder / "financial_data.csv", index=False)
+    build_upload_sample().to_csv(folder / "sample_upload.csv", index=False)
     (folder / "supabase" / "seed.sql").write_text(to_seed_sql(), encoding="utf-8")
-    print(f"Wrote financial_data.csv and supabase/seed.sql in {folder}")
+    print(f"Wrote financial_data.csv, sample_upload.csv and supabase/seed.sql in {folder}")
