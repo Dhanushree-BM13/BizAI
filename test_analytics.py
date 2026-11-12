@@ -6,7 +6,7 @@ import pandas as pd
 
 from analytics import analyse, backtest, clean, find_unusual_months, forecast
 from app import app
-from generate_data import COMPANIES, build
+from generate_data import COMPANIES, build, to_seed_sql
 
 app.config["USE_SUPABASE"] = False  # tests use the bundled CSV, no network
 
@@ -60,6 +60,12 @@ def test_health_score_works_without_success_column():
     company = next(iter(analyse(rows).values()))
     assert company["success"] is None
     assert "Delivery" not in [part["name"] for part in company["health"]["parts"]]
+
+
+def test_seed_sql_has_every_company_and_month():
+    sql = to_seed_sql(build())
+    assert sql.count("\n  ('") == len(COMPANIES)
+    assert sql.count("{") == 3 * len(COMPANIES) and "date '2021-11-01'" in sql
 
 
 def test_server_endpoints():

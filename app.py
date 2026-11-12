@@ -18,7 +18,8 @@ app.config["USE_SUPABASE"] = True  # tests switch this off so they run without a
 # row level security on the table only lets it read. Never put the secret key here.
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://pckkvrafahqelkwiyucv.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "sb_publishable_aZFg3JIGkQcQ2TcCu1T-5A_ApGCq5Wf")
-TABLE = "financials"
+VIEW = "company_financials"    # what the app reads: companies joined to their months
+TABLE = "monthly_financials"   # what the page listens to for live changes
 PAGE = 1000  # Supabase returns at most 1000 rows per request
 
 
@@ -26,7 +27,7 @@ def load_live():
     """Every row of the Supabase table, fetched a page at a time."""
     rows = []
     while True:
-        url = (f"{SUPABASE_URL}/rest/v1/{TABLE}?select=company,industry,date,revenue,expenses,project_success"
+        url = (f"{SUPABASE_URL}/rest/v1/{VIEW}?select=company,industry,date,revenue,expenses,project_success"
                f"&order=id&limit={PAGE}&offset={len(rows)}")
         for attempt in range(3):  # the connection is occasionally dropped, so try again before giving up
             try:

@@ -81,58 +81,46 @@ def build(seed=7):
     return pd.DataFrame(rows)
 
 
-SCHEMA = """-- BizAI: run this once in the Supabase SQL Editor. Safe to run again.
-create table if not exists public.financials (
-  id bigint generated always as identity primary key,
-  company text not null,
-  industry text not null default 'Uploaded data',
-  date date not null,
-  revenue numeric not null check (revenue > 0),
-  expenses numeric not null check (expenses >= 0),
-  project_success numeric,
-  unique (company, date)
-);
-
--- Anyone may read. Nobody may write through the public API; edit rows in the Supabase dashboard.
-alter table public.financials enable row level security;
-drop policy if exists "Anyone can read financials" on public.financials;
-create policy "Anyone can read financials" on public.financials for select to anon, authenticated using (true);
-
--- Send changes to the dashboard as they happen.
-do $$ begin
-  alter publication supabase_realtime add table public.financials;
-exception when duplicate_object then null;
-end $$;
-
--- Each company: one value per month, oldest first
-insert into public.financials (company, industry, date, revenue, expenses, project_success)
-select c.company, c.industry, (date '{start}' + (m.i - 1) * interval '1 month')::date, m.r, m.e, m.s
-from (values
-""".replace("{start}", MONTHS[0].strftime("%Y-%m-%d"))
-
-
-def to_sql(data):
-    """The table, its security rules and the demo rows as one SQL script.
+def to_seed_sql(data):
+    """The demo data as SQL for supabase/seed.sql. Run supabase/schema.sql first.
 
     Each company is one line holding its monthly values as arrays, which Postgres unpacks
-    into rows. This keeps the script short enough to paste into the Supabase SQL Editor.
+    into rows. The companies are inserted (or updated) first, then their months.
+    Safe to run again: existing rows are updated, not duplicated.
     """
     quote = lambda text: "'" + str(text).replace("'", "''") + "'"
     array = lambda values: "'{" + ",".join(format(v, "g") for v in values) + "}'"
-    lines = []
-    for company, rows in data.groupby("Company", sort=False):
-        lines.append(f"({quote(company)},{quote(rows.Industry.iloc[0])},{array(rows.Revenue_INR_Cr)},"
-                     f"{array(rows.Expenses_INR_Cr)},{array(rows.Project_Success_Rate_Pct)})")
-    return (SCHEMA + ",\n".join(lines) +
-            "\n) as c(company, industry, rev, exp, succ)\n"
-            "cross join lateral unnest(c.rev::numeric[], c.exp::numeric[], c.succ::numeric[]) with ordinality as m(r, e, s, i)\n"
-            "on conflict (company, date) do update set industry = excluded.industry, revenue = excluded.revenue,\n"
-            "  expenses = excluded.expenses, project_success = excluded.project_success;\n")
+    lines = [f"  ({quote(company)}, {quote(rows.Industry.iloc[0])},\n   {array(rows.Revenue_INR_Cr)},\n"
+             f"   {array(rows.Expenses_INR_Cr)},\n   {array(rows.Project_Success_Rate_Pct)})"
+             for company, rows in data.groupby("Company", sort=False)]
+    start = data.Date.min()
+    return f"""-- BizAI demo data: {len(lines)} invented companies, monthly from {start}.
+-- Run supabase/schema.sql first. Safe to run again.
+with data (company, industry, revenue, expenses, success) as (values
+{",\n".join(lines)}
+),
+saved_companies as (
+  insert into public.companies (name, industry)
+  select company, industry from data
+  on conflict (name) do update set industry = excluded.industry
+  returning id, name
+)
+insert into public.monthly_financials (company_id, month, revenue, expenses, project_success)
+select saved_companies.id,
+       (date '{start}' + (m.n - 1) * interval '1 month')::date,
+       m.revenue, m.expenses, m.success
+from data
+join saved_companies on saved_companies.name = data.company
+cross join lateral unnest(data.revenue::numeric[], data.expenses::numeric[], data.success::numeric[])
+  with ordinality as m (revenue, expenses, success, n)
+on conflict (company_id, month) do update
+  set revenue = excluded.revenue, expenses = excluded.expenses, project_success = excluded.project_success;
+"""
 
 
 if __name__ == "__main__":
     folder = Path(__file__).parent
     data = build()
     data.to_csv(folder / "financial_data.csv", index=False)
-    (folder / "supabase_setup.sql").write_text(to_sql(data), encoding="utf-8")
-    print(f"Wrote financial_data.csv and supabase_setup.sql in {folder}")
+    (folder / "supabase" / "seed.sql").write_text(to_seed_sql(data), encoding="utf-8")
+    print(f"Wrote financial_data.csv and supabase/seed.sql in {folder}")

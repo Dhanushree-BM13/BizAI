@@ -12,13 +12,34 @@ recommendations, a league table and a question box. Data comes live from Supabas
     python test_analytics.py   # 8 checks of the analysis and the server
 
 ## Live data (Supabase)
-1. Open the Supabase project, go to **SQL Editor**, paste the contents of `supabase_setup.sql` and run it.
-   It creates the `financials` table (or adds to it), lets the public key read it (and nothing else), switches on realtime
-   and loads the demo rows.
-2. Start the app. The masthead shows **Live** when it is reading Supabase.
-3. Change any row in the Supabase **Table Editor**: the dashboard redraws within a second, no refresh needed.
+1. In the Supabase **SQL Editor**, run `supabase/schema.sql`. It creates the database (see below).
+2. Then run `supabase/seed.sql`. It loads the 40 demo companies.
+3. Start the app. The masthead shows **Live** when it is reading Supabase.
+4. Change any row in the Supabase **Table Editor**: the dashboard redraws within a second, no refresh needed.
 
-Until step 1 is done, or when there is no internet, the app falls back to the bundled `financial_data.csv`
+### Schema
+
+```
+companies                         monthly_financials
+---------                         ------------------
+id          bigint  PK      1──*  id               bigint  PK
+name        text    unique        company_id       bigint  FK → companies.id (cascade delete)
+industry    text                  month            date    first day of month
+created_at  timestamptz           revenue          numeric(14,2)  > 0
+                                  expenses         numeric(14,2)  >= 0
+                                  project_success  numeric(5,2)   0–100, optional
+                                  created_at       timestamptz
+                                  unique (company_id, month)
+```
+
+- **Normalised:** a company's name and industry are stored once, not on every month.
+- **Constraints** reject bad data at the database: empty names, a month that is not the 1st,
+  zero revenue, negative expenses, a success rate outside 0–100, two rows for the same company and month.
+- **`company_financials`** is a view joining the two tables into the flat shape the app reads.
+- **Row level security:** the public key can only read. Writes go through the Supabase dashboard.
+- **Realtime** is on for both tables, so the dashboard updates when either changes.
+
+Both scripts are safe to run again. Until they are run, or when there is no internet, or when there is no internet, the app falls back to the bundled `financial_data.csv`
 and the masthead says **Bundled sample data**.
 
 The app only uses the *publishable* key, which is safe to show in a browser. The secret key and the database
@@ -28,7 +49,8 @@ password are never needed by the app and must never be put in this repository.
 - `analytics.py` – all the analysis. The page only draws what this returns.
 - `app.py` – Flask server: `GET /api/sample` (live or bundled data), `POST /api/analyze` (file upload, 10 MB limit).
 - `static/index.html` – the dashboard and the question box.
-- `generate_data.py` – builds the demo data: `financial_data.csv` and `supabase_setup.sql`.
+- `supabase/schema.sql` – the database: tables, constraints, view, security, realtime.
+- `generate_data.py` – builds the demo data: `financial_data.csv` and `supabase/seed.sql`.
 - `test_analytics.py` – tests.
 
 ## How it works
