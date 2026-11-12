@@ -22,6 +22,9 @@ button{font:inherit;color:inherit}:focus-visible{outline:2px solid var(--accent)
 .brand{font:italic 800 34px/1 var(--serif);letter-spacing:-.02em}.brand span{color:var(--accent)}
 .edition{font:400 12px/1.2 var(--mono);color:var(--mute);text-align:center}
 .tools{display:flex;justify-content:flex-end;gap:8px}
+.live{margin-left:14px;white-space:nowrap}.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mute);margin-right:7px}
+.live.on{color:var(--pos)}.live.on::before{background:var(--pos);animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{from{box-shadow:0 0 0 0 var(--pos)}to{box-shadow:0 0 0 8px transparent}}
 .btn{all:unset;cursor:pointer;font:500 12px/1 var(--mono);letter-spacing:.04em;padding:8px 12px;border:1px solid var(--ink);transition:background .2s,color .2s}
 .btn:hover{background:var(--ink);color:var(--paper)}.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .ticker{overflow:hidden;border-bottom:1px solid var(--rule);background:var(--wash)}
@@ -100,7 +103,12 @@ td.fig{font:400 13px var(--mono)}#simGain{display:block;margin:12px 0;font:itali
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{all:unset;cursor:pointer;font:400 13px var(--sans);padding:7px 14px;border:1px solid var(--rule);border-radius:99px;transition:border-color .2s,background .2s,color .2s}
 .chip:hover{border-color:var(--ink)}.chip[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-#answer{font:400 clamp(1.2rem,2.2vw,1.7rem)/1.35 var(--serif);margin-top:20px;padding-left:20px;border-left:3px solid var(--accent);max-width:46ch;min-height:4em}
+.thread{display:grid;gap:22px;margin-bottom:24px}
+.q{font:500 11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.a{font:400 1.15rem/1.45 var(--serif);padding-left:18px;border-left:3px solid var(--rule);max-width:62ch}
+.turn:last-child .a{border-color:var(--accent);font-size:clamp(1.2rem,2vw,1.5rem);line-height:1.38}
+.ask{display:flex;gap:8px;margin-bottom:14px}.ask input{flex:1;min-width:0;font:400 15px var(--sans);padding:10px 12px;border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink)}
+.ask input::placeholder{color:var(--mute)}@media print{.ask{display:none}}
 
 /* ---------- League table ---------- */
 #league td{padding:10px 0}#league td:nth-child(2),#league th:nth-child(2){text-align:left}#league .rk{font:300 22px var(--serif);color:var(--mute);width:44px}
@@ -126,7 +134,7 @@ main{padding:24px 16px 40px}.hero,.two{grid-template-columns:1fr;gap:0}.kpis{gri
 
 <header class="mast">
   <div class="brand">BizAI<span>.</span></div>
-  <p class="edition" id="edition">Monthly business review</p>
+  <p class="edition"><span id="edition">Monthly business review</span><span class="live" id="live" role="status" hidden></span></p>
   <div class="tools"><button class="btn" id="themeToggle"></button><button class="btn" id="printReport">Print report</button></div>
 </header>
 <div class="ticker" aria-label="All companies at a glance"><div class="track" id="ticker"></div></div>
@@ -192,15 +200,14 @@ main{padding:24px 16px 40px}.hero,.two{grid-template-columns:1fr;gap:0}.kpis{gri
   </div>
 
   <section class="reveal">
-    <div class="head"><div><p class="label">In brief</p><h2>Quick answers</h2></div></div>
-    <div class="chips" id="chips">
-      <button class="chip" data-topic="summary">How is it performing?</button>
-      <button class="chip" data-topic="trend">Is it growing or declining?</button>
-      <button class="chip" data-topic="forecast">What could revenue look like next?</button>
-      <button class="chip" data-topic="risks">What risks could affect it?</button>
-      <button class="chip" data-topic="actions">What should management do?</button>
-    </div>
-    <p id="answer" aria-live="polite"></p>
+    <div class="head"><div><p class="label">Questions</p><h2>Ask BizAI</h2></div></div>
+    <div class="thread" id="thread" aria-live="polite"></div>
+    <form class="ask" id="askForm">
+      <input id="question" autocomplete="off" aria-label="Ask a question about the data" placeholder="Ask about any company, month or measure">
+      <button class="btn">Ask</button>
+    </form>
+    <div class="chips" id="chips"></div>
+    <p class="caption">Answers are worked out by rules from the analysis on this page, not by a language model.</p>
   </section>
 
   <section class="reveal">
@@ -230,10 +237,12 @@ const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 // ---------- State ----------
 let companies = {};   // { company name: analysis from the server }
 let current = "";     // name of the company on screen
-let topic = "summary";
 let chart;
 let chartMonths = 0;  // months of history on the chart; 0 means all
 let chartStart = 0;   // index of the first month drawn
+let dataSource = "";  // "supabase" or "csv": where the server got the data
+let uploadedFile = ""; // name of the user's file when one is on screen
+let liveConnected = false, lastUpdate = "";
 
 // ---------- Motion helpers ----------
 // Count a number up (or down) from the value last shown under `key` to `target`.
@@ -274,11 +283,17 @@ document.querySelectorAll(".reveal").forEach(element => revealer.observe(element
 
 // ---------- Rendering ----------
 function show(data) {
+  const sameCompany = data[current] !== undefined;  // a live refresh keeps you on the company you were reading
   companies = data;
-  current = Object.keys(companies)[0];
+  if (!sameCompany) current = Object.keys(companies)[0];
   renderTicker();
   renderLeague();
   render();
+  renderSuggestions();
+  if (!sameCompany) {
+    $("thread").innerHTML = "";
+    ask("How is it performing?");
+  }
 }
 
 // Switch company with a page transition where the browser supports it.
@@ -299,7 +314,6 @@ function render() {
   renderFlags(company);
   renderHealthParts(company);
   renderSimulator();
-  renderAnswer();
   $("actions").innerHTML = company.actions.map(text => `<li><span>${escapeHtml(text)}</span></li>`).join("");
 }
 
@@ -491,12 +505,8 @@ function renderHealthParts(company) {
     })));
 }
 
-function renderSimulator() {
-  const company = companies[current];
-  if (!company) return;
-  const cut = +$("cutSlider").value, extraGrowth = +$("growthSlider").value;
-  $("cutValue").textContent = cut + "%";
-  $("growthValue").textContent = signed(extraGrowth, 1).replace(".0", "") + " pts";
+// Profit and margin over the forecast quarter, before and after a scenario.
+function simulate(company, cut, extraGrowth) {
   let baseRevenue = 0, baseProfit = 0, newRevenue = 0, newProfit = 0;
   company.forecast.revenue.forEach((revenue, i) => {
     const expenses = company.forecast.expenses[i];
@@ -505,42 +515,200 @@ function renderSimulator() {
     baseRevenue += revenue; baseProfit += revenue - expenses;
     newRevenue += scenarioRevenue; newProfit += scenarioRevenue - scenarioExpenses;
   });
+  return { baseProfit, newProfit, baseMargin: baseProfit / baseRevenue * 100, newMargin: newProfit / newRevenue * 100 };
+}
+
+function renderSimulator() {
+  const company = companies[current];
+  if (!company) return;
+  const cut = +$("cutSlider").value, extraGrowth = +$("growthSlider").value;
+  $("cutValue").textContent = cut + "%";
+  $("growthValue").textContent = signed(extraGrowth, 1).replace(".0", "") + " pts";
+  const { baseProfit, newProfit, baseMargin, newMargin } = simulate(company, cut, extraGrowth);
   const gain = newProfit - baseProfit;
   $("simBaseProfit").textContent = money(baseProfit);
-  $("simBaseMargin").textContent = (baseProfit / baseRevenue * 100).toFixed(1) + "%";
-  $("simNewMargin").textContent = (newProfit / newRevenue * 100).toFixed(1) + "%";
+  $("simBaseMargin").textContent = baseMargin.toFixed(1) + "%";
+  $("simNewMargin").textContent = newMargin.toFixed(1) + "%";
   countTo($("simNewProfit"), "simProfit", newProfit, money);
   $("simGain").className = gain >= 0 ? "pos" : "neg";
   $("simGain").textContent = gain === 0 ? "Move a slider to test a scenario." : `${gain > 0 ? "+" : "−"}${money(Math.abs(gain))} profit over the quarter`;
   if (gain === 0) $("simGain").className = "mute";
 }
 
-// Each quick answer is a sentence filled in from the analysis. No language model is involved.
+// ---------- Ask BizAI ----------
+// A rule-based question answerer. It looks in the question for company names, a measure, a month
+// and the kind of question (rank, compare, what-if, why...), then fills in an answer from the
+// analysis. No language model is involved, so it only knows what is on this page.
+
+const percent = value => value.toFixed(1) + "%";
+
+// Measures the answerer understands. `words` are matched inside the question, first match wins,
+// so "profit margin" must be listed before plain "profit". `i` is the month index.
+const MEASURES = [
+  { words: ["health", "score", "rating"], label: "health score", value: c => c.health.score, show: v => v + "/100" },
+  { words: ["grow", "declin", "trend", "fastest", "slowest"], label: "revenue growth", value: c => c.growth, show: v => signed(v) + "% a month" },
+  { words: ["margin", "profitab"], label: "profit margin", value: (c, i) => c.margin[i], show: percent, monthly: true },
+  { words: ["profit", "earn"], label: "profit", value: (c, i) => c.revenue[i] - c.expenses[i], show: money, monthly: true },
+  { words: ["expense", "cost", "spend"], label: "expenses", value: (c, i) => c.expenses[i], show: money, monthly: true },
+  { words: ["revenue", "sales", "income", "turnover", "biggest", "largest", "smallest"], label: "revenue", value: (c, i) => c.revenue[i], show: money, monthly: true },
+  { words: ["success", "delivery", "project"], label: "project success rate", value: (c, i) => c.success ? c.success[i] : null, show: percent, monthly: true },
+  { words: ["accura", "error", "reliab"], label: "forecast error", value: c => c.backtest ? c.backtest.mape : null, show: v => v + "%", lowerIsBetter: true },
+];
+const latestValue = (measure, company) => measure.value(company, company.revenue.length - 1);
+
+// Companies named in the question, by full name or by first word ("Sahyadri").
+function findCompanies(text) {
+  const wordsInText = text.split(/\W+/);
+  return Object.keys(companies).filter(name => {
+    const lower = name.toLowerCase(), firstWord = lower.split(" ")[0];
+    return text.includes(lower) || (firstWord.length >= 4 && wordsInText.includes(firstWord));
+  });
+}
+
+// Index of a month named in the question ("March 2024", "mar 24", "in May"), or -1.
+function findMonth(text, company) {
+  const match = text.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b(?:\s+'?(\d{4}|\d{2})\b)?/);
+  if (!match) return -1;
+  if (match[1] === "may" && !match[2] && !text.includes("in may")) return -1;  // "may" is usually not the month
+  const label = match[1][0].toUpperCase() + match[1].slice(1, 3) + (match[2] ? " " + match[2].slice(-2) : "");
+  return company.months.findLastIndex(month => month.startsWith(label));  // no year given: the most recent one
+}
+
 const answers = {
-  summary(company) {
-    const last = company.revenue.length - 1;
-    return `${current} reported ${money(company.revenue[last])} revenue and ${money(company.expenses[last])} expenses in ${company.latest_month}, a ${company.margin[last].toFixed(1)}% margin. Business health score: ${company.health.score}/100 (${company.health.label.toLowerCase()}).`;
+  summary(name) {
+    const company = companies[name], last = company.revenue.length - 1;
+    return `${name} reported ${money(company.revenue[last])} revenue and ${money(company.expenses[last])} expenses in ${company.latest_month}, a ${company.margin[last].toFixed(1)}% margin. Revenue is ${company.growth >= 0 ? "growing" : "declining"} about ${Math.abs(company.growth).toFixed(1)}% a month. Health score: ${company.health.score}/100 (${company.health.label.toLowerCase()}).`;
   },
-  trend(company) {
-    return `${current} revenue is ${company.growth >= 0 ? "growing" : "declining"} about ${Math.abs(company.growth).toFixed(1)}% a month, while expenses move ${signed(company.expense_growth)}% a month.`;
+  forecast(name) {
+    const company = companies[name], total = sum(company.forecast.revenue), range = company.forecast.band * 3;
+    const check = company.backtest ? ` In back-testing this model was off by ${company.backtest.mape}% on average.` : "";
+    return `${name}’s revenue is projected near ${money(total)} over the next 3 months, most likely between ${money(total - range)} and ${money(total + range)}.${check} It extends past trend and is not a guarantee.`;
   },
-  forecast(company) {
-    const total = sum(company.forecast.revenue), range = company.forecast.band * 3;
-    return `Revenue is projected near ${money(total)} over the next 3 months, most likely between ${money(total - range)} and ${money(total + range)}. This extends past trend and is not a guarantee.`;
+  risks(name) {
+    const company = companies[name];
+    const drift = `Expenses are moving ${signed(company.expense_growth)}% a month against revenue at ${signed(company.growth)}%.`;
+    if (!company.flags.length) return `${name} has no unusual months. ${drift}`;
+    return `${name} had ${company.flags.length} unusual month${company.flags.length > 1 ? "s" : ""}: ` +
+      company.flags.map(flag => `${flag.month} (${flag.cause} ${signed(flag.deviation)}% off trend)`).join("; ") + `. ${drift}`;
   },
-  risks(company) {
-    if (!company.flags.length) return `No unusual months. The main thing to watch is expenses moving ${signed(company.expense_growth)}% a month against revenue at ${signed(company.growth)}%.`;
-    return "Watch these months: " + company.flags.map(flag => `${flag.month} (margin ${flag.margin.toFixed(1)}%)`).join("; ") + ".";
+  actions(name) {
+    return `For ${name}: ` + companies[name].actions.join(" ");
   },
-  actions(company) {
-    return company.actions.join(" ");
+  // Why the health score is what it is: the weakest and strongest parts.
+  explainScore(name) {
+    const { score, label, parts } = companies[name].health;
+    const sorted = [...parts].sort((a, b) => a.value - b.value);
+    const weak = sorted.slice(0, 2).map(part => `${part.name.toLowerCase()} (${part.value}/100)`).join(" and ");
+    const strong = sorted[sorted.length - 1];
+    return `${name} scores ${score}/100 (${label.toLowerCase()}). It is held back most by ${weak}. Its strongest part is ${strong.name.toLowerCase()} at ${strong.value}/100.`;
+  },
+  measure(name, measure) {
+    const company = companies[name], value = latestValue(measure, company);
+    if (value === null) return `There is no ${measure.label} data for ${name}.`;
+    let text = `${name}’s ${measure.label} is ${measure.show(value)}`;
+    if (measure.monthly) {
+      text += ` for ${company.latest_month}`;
+      const yearAgo = company.revenue.length - 13;
+      if (yearAgo >= 0) text += `, against ${measure.show(measure.value(company, yearAgo))} a year earlier`;
+    }
+    return text + ".";
+  },
+  month(name, index, measure) {
+    const company = companies[name], when = company.months[index];
+    const flag = company.flags.find(f => f.index === index);
+    const note = flag ? ` This month was flagged as unusual: ${flag.cause} ran ${signed(flag.deviation)}% against trend.` : "";
+    if (measure && measure.monthly) return `${name}’s ${measure.label} in ${when} was ${measure.show(measure.value(company, index))}.${note}`;
+    return `In ${when}, ${name} had ${money(company.revenue[index])} revenue and ${money(company.expenses[index])} expenses, a ${company.margin[index].toFixed(1)}% margin.${note}`;
+  },
+  rank(measure, weakestFirst) {
+    const better = (a, b) => measure.lowerIsBetter ? a[1] - b[1] : b[1] - a[1];
+    const rows = Object.keys(companies).map(name => [name, latestValue(measure, companies[name])]).filter(row => row[1] !== null).sort(better);
+    if (weakestFirst) rows.reverse();
+    const list = rows.slice(0, 3).map((row, i) => `${i + 1}. ${row[0]} (${measure.show(row[1])})`).join(", ");
+    const other = rows[rows.length - 1];
+    return `By ${measure.label}, ${weakestFirst ? "weakest" : "best"} first: ${list}. At the other end is ${other[0]} (${measure.show(other[1])}).`;
+  },
+  compare(first, second, measure) {
+    const measures = measure ? [measure] : MEASURES.slice(0, 3);  // health, growth, margin
+    let wins = 0;
+    const lines = measures.map(m => {
+      const a = latestValue(m, companies[first]), b = latestValue(m, companies[second]);
+      if (a === null || b === null) return `No ${m.label} data for both.`;
+      if (m.lowerIsBetter ? a < b : a > b) wins++;
+      return `${m.label[0].toUpperCase() + m.label.slice(1)}: ${m.show(a)} against ${m.show(b)}.`;
+    });
+    const verdict = wins * 2 === measures.length ? "They are level." : `${wins * 2 > measures.length ? first : second} is ahead${measures.length > 1 ? ` on ${Math.max(wins, measures.length - wins)} of ${measures.length} measures` : ""}.`;
+    return `${first} against ${second}. ${lines.join(" ")} ${verdict}`;
+  },
+  whatIf(name, text, amount) {
+    const company = companies[name];
+    const down = ["cut", "reduce", "lower", "drop", "fall", "save"].some(word => text.includes(word));
+    const aboutExpenses = ["expense", "cost", "spend"].some(word => text.includes(word));
+    // The simulator covers expense cuts of 0-15% and growth changes of -3 to +3 points.
+    const cut = aboutExpenses && down ? Math.min(15, amount) : 0;
+    const extraGrowth = aboutExpenses ? 0 : Math.min(3, amount) * (down ? -1 : 1);
+    if (!cut && !extraGrowth) return "The simulator can cut expenses by up to 15%, or change monthly revenue growth by up to 3 points. Try “what if we cut expenses by 10%”.";
+    const result = simulate(company, cut, extraGrowth);
+    if (name === current) { $("cutSlider").value = cut; $("growthSlider").value = extraGrowth; renderSimulator(); }
+    const change = cut ? `Cutting expenses by ${cut}%` : `Changing monthly revenue growth by ${signed(extraGrowth)} points`;
+    return `${change} would move ${name}’s profit over the next 3 months from ${money(result.baseProfit)} to ${money(result.newProfit)}, and its margin from ${result.baseMargin.toFixed(1)}% to ${result.newMargin.toFixed(1)}%.` +
+      (name === current ? " The simulator above now shows this scenario." : "");
   },
 };
 
-function renderAnswer() {
-  $("answer").textContent = answers[topic](companies[current]);
-  document.querySelectorAll(".chip").forEach(chip => chip.setAttribute("aria-pressed", chip.dataset.topic === topic));
-  if (!reducedMotion) $("answer").animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 400, easing: "ease-out" });
+const HELP = "I can report any measure for a company or month, rank or compare companies, explain a health score, describe risks and forecasts, and run what-if scenarios.";
+
+// Decide what kind of question this is, most specific first, and answer it.
+function reply(question) {
+  const text = question.toLowerCase();
+  const has = (...parts) => parts.some(part => text.includes(part));
+  const named = findCompanies(text);
+  const name = named[0] || current;
+  const measure = MEASURES.find(m => has(...m.words));
+
+  const amount = text.match(/(\d+(?:\.\d+)?)\s*(?:%|percent|pts|points?)/);
+  if (amount && has("what if", "cut", "reduce", "lower", "increase", "raise", "boost", "save")) return answers.whatIf(name, text, +amount[1]);
+
+  const wantsBest = has("best", "top", "highest", "most", "strongest", "healthiest", "fastest", "biggest", "largest", "leader");
+  const wantsWorst = has("worst", "lowest", "weakest", "least", "slowest", "smallest", "bottom", "struggl");
+  if ((wantsBest || wantsWorst || has("rank")) && !named.length && Object.keys(companies).length > 1) return answers.rank(measure || MEASURES[0], wantsWorst && !wantsBest);
+
+  if (named.length >= 2) return answers.compare(named[0], named[1], measure);
+  if (named.length === 1 && named[0] !== current && has("compare", "versus", " vs", "than", "against")) return answers.compare(current, named[0], measure);
+
+  if (has("why", "explain", "breakdown") && has("score", "health", "rating", "risk", "watch", "strong", "weak")) return answers.explainScore(name);
+  if (has("risk", "unusual", "anomal", "problem", "wrong", "concern", "warning", "flag")) return answers.risks(name);
+  if (has("forecast", "predict", "next", "future", "expect", "outlook", "projection")) return answers.forecast(name);
+  if (has("should", "recommend", "advice", "advise", "improve", "action", "suggest", "what to do")) return answers.actions(name);
+
+  const monthIndex = findMonth(text, companies[name]);
+  if (monthIndex >= 0) return answers.month(name, monthIndex, measure);
+  if (measure) return answers.measure(name, measure);
+  if (named.length || has("perform", "doing", "overview", "summary", "status", "how is", "tell me")) return answers.summary(name);
+  if (has("help", "what can you", "hello")) return HELP;
+  return "I could not match that to the data on this page. " + HELP;
+}
+
+// Add a question and its answer to the thread, keeping the last four.
+function ask(question) {
+  question = question.trim();
+  if (!question || !companies[current]) return;
+  const turn = document.createElement("div"), asked = document.createElement("p"), answered = document.createElement("p");
+  turn.className = "turn"; asked.className = "q"; answered.className = "a";
+  asked.textContent = question;
+  answered.textContent = reply(question);
+  turn.append(asked, answered);
+  $("thread").append(turn);
+  while ($("thread").children.length > 4) $("thread").firstChild.remove();
+  if (!reducedMotion) turn.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 450, easing: "ease-out" });
+}
+
+// Example questions, built from the companies actually loaded.
+function renderSuggestions() {
+  const names = Object.keys(companies);
+  const examples = ["Why is the health score what it is?", "What risks could affect it?", "What if we cut expenses by 10%?"];
+  if (names.length > 1) examples.push("Which company is growing fastest?", "Rank by profit margin", `Compare ${names[0]} and ${names[names.length - 1]}`);
+  $("chips").innerHTML = examples.map(example => `<button class="chip" type="button">${escapeHtml(example)}</button>`).join("");
 }
 
 function renderLeague() {
@@ -565,9 +733,14 @@ function loadData(request, sourceName) {
   $("msg").textContent = "";
   $("source").textContent = sourceName ? `Analysing ${sourceName}…` : "";
   return request
-    .then(response => response.json().then(body => response.ok ? body : Promise.reject(body)))
+    .then(response => {
+      if (!sourceName) dataSource = response.headers.get("X-Data-Source");
+      return response.json().then(body => response.ok ? body : Promise.reject(body));
+    })
     .then(data => {
       show(data);
+      uploadedFile = sourceName;
+      renderLiveBadge();
       $("source").textContent = sourceName ? `Showing ${sourceName}` : "";
       $("useSample").hidden = !sourceName;
     })
@@ -604,7 +777,12 @@ document.addEventListener("click", event => {
 });
 $("chips").onclick = event => {
   const chip = event.target.closest(".chip");
-  if (chip) { topic = chip.dataset.topic; renderAnswer(); }
+  if (chip) ask(chip.textContent);
+};
+$("askForm").onsubmit = event => {
+  event.preventDefault();
+  ask($("question").value);
+  $("question").value = "";
 };
 const flagUnder = event => {
   const item = event.target.closest("[data-flag]");
@@ -652,6 +830,48 @@ let themeBeforePrint;
 addEventListener("beforeprint", () => { themeBeforePrint = document.documentElement.dataset.theme; setTheme("light"); });
 addEventListener("afterprint", () => setTheme(themeBeforePrint));
 $("printReport").onclick = () => print();
+
+// ---------- Live updates from Supabase ----------
+function renderLiveBadge() {
+  const live = dataSource === "supabase" && !uploadedFile;
+  $("live").hidden = false;
+  $("live").classList.toggle("on", live && liveConnected);
+  $("live").textContent = uploadedFile ? "Uploaded file"
+    : !live ? "Bundled sample data"
+    : liveConnected ? "Live" + (lastUpdate ? ` · updated ${lastUpdate}` : "")
+    : "Supabase";
+}
+
+// Listen for row changes in the Supabase table and redraw when they happen.
+async function connectLive() {
+  const config = await fetch("api/config").then(response => response.json());
+  if (!config.url) return;
+  await new Promise((resolve, reject) => {  // load the Supabase client only when it is needed
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.append(script);
+  });
+  let timer;
+  supabase.createClient(config.url, config.key).channel("financials-changes")
+    .on("postgres_changes", { event: "*", schema: "public", table: config.table }, () => {
+      clearTimeout(timer);  // many rows can change at once, so wait for them to settle and reload once
+      timer = setTimeout(() => {
+        if (uploadedFile) return;
+        fetch("api/sample").then(response => {
+          dataSource = response.headers.get("X-Data-Source");
+          return response.json();
+        }).then(data => {
+          show(data);
+          lastUpdate = new Date().toLocaleTimeString("en-IN");
+          renderLiveBadge();
+        });
+      }, 600);
+    })
+    .subscribe(status => { liveConnected = status === "SUBSCRIBED"; renderLiveBadge(); });
+}
+connectLive().catch(() => {});  // the dashboard works without live updates
 
 loadData(fetch("api/sample"), "");
 </script></body></html>

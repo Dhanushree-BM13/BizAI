@@ -6,7 +6,9 @@ import pandas as pd
 
 from analytics import analyse, backtest, clean, find_unusual_months, forecast
 from app import app
-from generate_data import build
+from generate_data import COMPANIES, build
+
+app.config["USE_SUPABASE"] = False  # tests use the bundled CSV, no network
 
 MONTHS_36 = np.tile(np.arange(1, 13), 3)
 
@@ -47,7 +49,7 @@ def test_clean_rejects_missing_columns():
 
 def test_sample_data_analyses_fully():
     result = analyse(clean(build()))
-    assert len(result) == 7
+    assert len(result) == len(COMPANIES)
     for company in result.values():
         assert 0 <= company["health"]["score"] <= 100
         assert len(company["forecast"]["revenue"]) == 3 and company["backtest"]["folds"] == 4
@@ -63,13 +65,14 @@ def test_health_score_works_without_success_column():
 def test_server_endpoints():
     client = app.test_client()
     assert client.get("/").status_code == 200
-    assert len(client.get("/api/sample").get_json()) == 7
+    assert len(client.get("/api/sample").get_json()) == len(COMPANIES)
+    assert client.get("/api/sample").headers["X-Data-Source"] == "csv" and client.get("/api/config").get_json() == {}
     assert client.get("/api/sample.csv").data.startswith(b"Date,Company")
     assert client.post("/api/analyze").status_code == 400
     bad = client.post("/api/analyze", data={"file": (io.BytesIO(b"a,b\n1,2\n"), "bad.csv")})
     assert bad.status_code == 400 and "Missing columns" in bad.get_json()["error"]
     good = client.post("/api/analyze", data={"file": (io.BytesIO(build().to_csv(index=False).encode()), "ok.csv")})
-    assert good.status_code == 200 and len(good.get_json()) == 7
+    assert good.status_code == 200 and len(good.get_json()) == len(COMPANIES)
 
 
 if __name__ == "__main__":

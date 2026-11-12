@@ -81,10 +81,19 @@ def forecast(months, y, horizon=HORIZON):
     n = len(y)
     seasonal = n >= SEASONAL_MIN_MONTHS
     X = _features(np.arange(n), months, seasonal)
-    model = LinearRegression().fit(X, y)
     future_months = (months[-1] + np.arange(1, horizon + 1) - 1) % 12 + 1
-    predicted = model.predict(_features(np.arange(n, n + horizon), future_months, seasonal))
-    residuals = y - model.predict(X)
+    future = _features(np.arange(n, n + horizon), future_months, seasonal)
+
+    def fit(transform, inverse):
+        model = LinearRegression().fit(X, transform(y))
+        return inverse(model.predict(future)), y - inverse(model.predict(X))
+
+    # Try a straight-line trend and, for positive values, a steady-percentage trend
+    # (a straight line in logs). Keep whichever fits the history more closely.
+    candidates = [fit(lambda v: v, lambda v: v)]
+    if (y > 0).all():
+        candidates.append(fit(np.log, np.exp))
+    predicted, residuals = min(candidates, key=lambda c: (c[1] ** 2).sum())
     spread = np.sqrt((residuals ** 2).sum() / max(1, n - X.shape[1] - 1))
     # 1.28 standard deviations either side covers about 80% of a normal distribution.
     return predicted, 1.28 * spread, "Trend + seasonality" if seasonal else "Linear trend"
@@ -127,7 +136,10 @@ def find_unusual_months(revenue, expenses):
     """
     n = len(revenue)
     margin = (revenue - expenses) / revenue * 100
-    z = (margin - margin.mean()) / (margin.std() or 1)
+    t = np.arange(n)
+    # Compare each month with the margin's own trend line, so a slow drift over the years is not mistaken for a shock.
+    gap = margin - np.polyval(np.polyfit(t, margin, 1), t)
+    z = gap / (gap.std() or 1)
     X = np.column_stack([
         margin,
         np.r_[0, np.diff(revenue) / revenue[:-1]],
@@ -135,7 +147,6 @@ def find_unusual_months(revenue, expenses):
     ])
     X = (X - X.mean(0)) / (X.std(0) + 1e-9)
     isolation = -IsolationForest(n_estimators=200, random_state=0).fit(X).score_samples(X)
-    t = np.arange(n)
     revenue_trend = np.polyval(np.polyfit(t, revenue, 1), t)
     expense_trend = np.polyval(np.polyfit(t, expenses, 1), t)
     flags = []
