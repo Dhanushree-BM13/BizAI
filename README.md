@@ -13,7 +13,8 @@ recommendations, a league table and a question box. Data comes live from Supabas
 
 ## Live data (Supabase)
 1. In the Supabase **SQL Editor**, run `supabase/schema.sql`. It creates the database (see below).
-2. Then run `supabase/seed.sql`. It loads the 40 demo companies.
+2. Then run `supabase/seed.sql`. It loads the 40 demo companies. The monthly rows are computed inside
+   Postgres from each company's parameters, with the same formula as `generate_data.py`, so the script stays short.
 3. Start the app. The masthead shows **Live** when it is reading Supabase.
 4. Change any row in the Supabase **Table Editor**: the dashboard redraws within a second, no refresh needed.
 
@@ -63,7 +64,7 @@ standard deviations, about an 80% range.
 really happened. This is repeated for 4 windows (12 hidden months). The error measure is MAPE, the mean absolute
 percentage error. The baseline is the naive guess "same as the last known month".
 
-Across the 40 demo companies the model beat the naive guess for all 40. Median error: **1.36%** for the model against **4.86%** for the naive guess (model range 0.81–3.03%). The Accuracy line under each company's chart shows its own figures.
+Across the 40 demo companies the model beat the naive guess for all 40. Median error: **1.49%** for the model against **5.51%** for the naive guess (model range 0.51–2.97%). The Accuracy line under each company's chart shows its own figures.
 
 **Unusual months.** Each month's profit margin is compared with the margin's own trend line. A month is flagged only
 when two checks agree: that gap is beyond 1.8 standard deviations, and an `IsolationForest` ranks the month among

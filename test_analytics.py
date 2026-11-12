@@ -62,10 +62,13 @@ def test_health_score_works_without_success_column():
     assert "Delivery" not in [part["name"] for part in company["health"]["parts"]]
 
 
-def test_seed_sql_has_every_company_and_month():
-    sql = to_seed_sql(build())
-    assert sql.count("\n  ('") == len(COMPANIES)
-    assert sql.count("{") == 3 * len(COMPANIES) and "date '2021-11-01'" in sql
+def test_seed_sql_lists_every_company():
+    sql = to_seed_sql()
+    assert sql.count("\n  ('") == len(COMPANIES) and "generate_series(0, 59)" in sql
+
+
+def test_demo_data_is_repeatable():
+    assert build().equals(build())
 
 
 def test_server_endpoints():

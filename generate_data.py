@@ -1,11 +1,12 @@
 """Builds the demo dataset, financial_data.csv.
 
 Every company name and every figure here is invented. Run `python generate_data.py`
-to rebuild the file; the fixed seed makes the output identical each time.
+to rebuild it and supabase/seed.sql; the output is identical each time.
 """
+import hashlib
+import math
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 MONTHS = pd.date_range(end="2026-10-01", periods=60, freq="MS")  # five years, up to the last full month
@@ -56,63 +57,105 @@ COMPANIES = [
 ]
 
 
-def build(seed=7):
-    rng = np.random.default_rng(seed)
-    t = np.arange(len(MONTHS))
-    season = np.sin(2 * np.pi * (MONTHS.month.to_numpy() - 3) / 12)
+# Repeatable "random" numbers. Each one comes from an MD5 hash of the company, month and a
+# slot number, so Python here and Postgres in supabase/seed.sql produce the same values.
+def uniform(name, t, slot):
+    """A number between 0 and 1, the same every time for the same inputs."""
+    return int(hashlib.md5(f"{name}:{t}:{slot}".encode()).hexdigest()[:7], 16) / 2 ** 28
+
+
+def normal(name, t, slot):
+    """Roughly bell-shaped, mean 0, standard deviation 1: the sum of four uniforms, rescaled."""
+    return (sum(uniform(name, t, slot + i) for i in range(4)) - 2) * math.sqrt(3)
+
+
+def build():
+    """Every company's monthly figures. supabase/seed.sql uses the same formula."""
     rows = []
     for name, industry, start, growth, swing, margin, drift in COMPANIES:
-        revenue = start * (1 + growth) ** t * (1 + swing * season) * rng.normal(1, 0.012, len(t))
-        expenses = revenue * (1 - margin - drift * t) * rng.normal(1, 0.008, len(t))
-        success = np.clip(rng.normal(91, 2.5, len(t)), 82, 98)
-        # Three unusual months per company, so the anomaly detector has something to find.
-        for month in rng.choice(np.arange(3, len(t)), size=3, replace=False):
-            if rng.random() < 0.5:
-                expenses[month] *= rng.uniform(1.12, 1.20)  # cost overrun
-            else:
-                revenue[month] *= rng.uniform(0.86, 0.90)  # revenue dip
-            success[month] -= rng.uniform(12, 18)
-        for i, date in enumerate(MONTHS):
+        for t, date in enumerate(MONTHS):
+            season = math.sin(2 * math.pi * (date.month - 3) / 12)
+            revenue = start * (1 + growth) ** t * (1 + swing * season) * (1 + 0.012 * normal(name, t, 0))
+            expenses = revenue * (1 - margin - drift * t) * (1 + 0.008 * normal(name, t, 4))
+            success = min(98, max(82, 91 + 2.5 * normal(name, t, 8)))
+            # About three unusual months per company, so the anomaly detector has something to find.
+            if t >= 3 and uniform(name, t, 12) < 3 / 57:
+                size = uniform(name, t, 14)
+                if uniform(name, t, 13) < 0.5:
+                    expenses *= 1.12 + 0.08 * size  # cost overrun
+                else:
+                    revenue *= 0.86 + 0.04 * size   # revenue dip
+                success -= 12 + 6 * size
             rows.append({
                 "Date": date.strftime("%Y-%m-%d"), "Company": name, "Industry": industry,
-                "Revenue_INR_Cr": round(revenue[i], 2), "Expenses_INR_Cr": round(expenses[i], 2),
-                "Project_Success_Rate_Pct": round(success[i], 1),
+                "Revenue_INR_Cr": round(revenue, 2), "Expenses_INR_Cr": round(expenses, 2),
+                "Project_Success_Rate_Pct": round(success, 1),
             })
     return pd.DataFrame(rows)
 
 
-def to_seed_sql(data):
-    """The demo data as SQL for supabase/seed.sql. Run supabase/schema.sql first.
+def to_seed_sql():
+    """SQL that builds the demo data inside Postgres, for supabase/seed.sql.
 
-    Each company is one line holding its monthly values as arrays, which Postgres unpacks
-    into rows. The companies are inserted (or updated) first, then their months.
-    Safe to run again: existing rows are updated, not duplicated.
+    Only the company parameters are listed; the monthly rows are computed with the same
+    formula as build(). Run supabase/schema.sql first. Safe to run again.
     """
     quote = lambda text: "'" + str(text).replace("'", "''") + "'"
-    array = lambda values: "'{" + ",".join(format(v, "g") for v in values) + "}'"
-    lines = [f"  ({quote(company)}, {quote(rows.Industry.iloc[0])},\n   {array(rows.Revenue_INR_Cr)},\n"
-             f"   {array(rows.Expenses_INR_Cr)},\n   {array(rows.Project_Success_Rate_Pct)})"
-             for company, rows in data.groupby("Company", sort=False)]
-    start = data.Date.min()
-    return f"""-- BizAI demo data: {len(lines)} invented companies, monthly from {start}.
--- Run supabase/schema.sql first. Safe to run again.
-with data (company, industry, revenue, expenses, success) as (values
-{",\n".join(lines)}
+    params = ",\n".join(f"  ({quote(n)}, {quote(i)}, {start}, {g}, {sw}, {m}, {d})"
+                         for n, i, start, g, sw, m, d in COMPANIES)
+    return (SEED_SQL.replace("{params}", params).replace("{start}", MONTHS[0].strftime("%Y-%m-%d"))
+            .replace("{last}", str(len(MONTHS) - 1)).replace("{count}", str(len(COMPANIES))))
+
+
+SEED_SQL = """-- ---------------------------------------------------------------------
+-- BizAI demo data: {count} invented companies, 5 years of months.
+-- The rows are computed here from each company's parameters, using the
+-- same formula as generate_data.py. Safe to run again.
+-- ---------------------------------------------------------------------
+
+-- Repeatable random numbers from an MD5 hash (temporary: gone after this run)
+create or replace function pg_temp.uniform(company text, t int, slot int) returns double precision
+language sql immutable as $$
+  select (('x' || lpad(substr(md5(company || ':' || t || ':' || slot), 1, 7), 8, '0'))::bit(32)::int / 268435456.0)::double precision
+$$;
+
+create or replace function pg_temp.normal(company text, t int, slot int) returns double precision
+language sql immutable as $$
+  select (pg_temp.uniform(company, t, slot) + pg_temp.uniform(company, t, slot + 1)
+        + pg_temp.uniform(company, t, slot + 2) + pg_temp.uniform(company, t, slot + 3) - 2) * sqrt(3)
+$$;
+
+-- name, industry, starting revenue (Rs crore), monthly growth, seasonal swing, profit margin, monthly margin change
+with params (name, industry, start_revenue, growth, swing, margin, drift) as (values
+{params}
 ),
 saved_companies as (
   insert into public.companies (name, industry)
-  select company, industry from data
+  select name, industry from params
   on conflict (name) do update set industry = excluded.industry
   returning id, name
 )
 insert into public.monthly_financials (company_id, month, revenue, expenses, project_success)
-select saved_companies.id,
-       (date '{start}' + (m.n - 1) * interval '1 month')::date,
-       m.revenue, m.expenses, m.success
-from data
-join saved_companies on saved_companies.name = data.company
-cross join lateral unnest(data.revenue::numeric[], data.expenses::numeric[], data.success::numeric[])
-  with ordinality as m (revenue, expenses, success, n)
+select c.id, d.month,
+       round((r.revenue * case when x.unusual and not x.cost_overrun then 0.86 + 0.04 * x.size else 1 end)::numeric, 2),
+       round((x.expenses * case when x.unusual and x.cost_overrun then 1.12 + 0.08 * x.size else 1 end)::numeric, 2),
+       round((x.success - case when x.unusual then 12 + 6 * x.size else 0 end)::numeric, 1)
+from params p
+join saved_companies c on c.name = p.name
+cross join generate_series(0, {last}) as t
+cross join lateral (select (date '{start}' + t * interval '1 month')::date as month) d
+cross join lateral (
+  select p.start_revenue * power(1 + p.growth, t)
+         * (1 + p.swing * sin(2 * pi() * (extract(month from d.month)::int - 3) / 12))
+         * (1 + 0.012 * pg_temp.normal(p.name, t, 0)) as revenue
+) r
+cross join lateral (
+  select r.revenue * (1 - p.margin - p.drift * t) * (1 + 0.008 * pg_temp.normal(p.name, t, 4)) as expenses,
+         least(98, greatest(82, 91 + 2.5 * pg_temp.normal(p.name, t, 8)))       as success,
+         t >= 3 and pg_temp.uniform(p.name, t, 12) < 3.0 / 57                     as unusual,
+         pg_temp.uniform(p.name, t, 13) < 0.5                                     as cost_overrun,
+         pg_temp.uniform(p.name, t, 14)                                           as size
+) x
 on conflict (company_id, month) do update
   set revenue = excluded.revenue, expenses = excluded.expenses, project_success = excluded.project_success;
 """
@@ -122,5 +165,5 @@ if __name__ == "__main__":
     folder = Path(__file__).parent
     data = build()
     data.to_csv(folder / "financial_data.csv", index=False)
-    (folder / "supabase" / "seed.sql").write_text(to_seed_sql(data), encoding="utf-8")
+    (folder / "supabase" / "seed.sql").write_text(to_seed_sql(), encoding="utf-8")
     print(f"Wrote financial_data.csv and supabase/seed.sql in {folder}")
