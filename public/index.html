@@ -97,7 +97,7 @@ td:first-child,th:first-child{text-align:left}th{font:500 11px var(--mono);lette
 td.fig{font:400 13px var(--mono)}#simGain{display:block;margin:12px 0;font:italic 500 20px var(--serif)}
 .hp{display:grid;grid-template-columns:7.5em 1fr 6em;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule);font-size:14px}
 .hp span:last-child{text-align:right;font:400 12px var(--mono);color:var(--mute)}
-.bar{height:4px;background:var(--rule)}.bar i{display:block;height:100%;width:0;background:var(--ink);transition:width 1s var(--ease)}
+.meter{height:4px;background:var(--rule)}.meter i{display:block;height:100%;width:0;background:var(--ink);transition:width 1s var(--ease)}
 
 /* ---------- Quick answers ---------- */
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -521,7 +521,7 @@ function pointChartAt(flag) {
 
 function renderHealthParts(company) {
   $("healthParts").innerHTML = company.health.parts.map(part =>
-    `<div class="hp"><span>${part.name}</span><div class="bar"><i data-width="${part.value}"></i></div>` +
+    `<div class="hp"><span>${part.name}</span><div class="meter"><i data-width="${part.value}"></i></div>` +
     `<span>${part.value} × ${Math.round(part.weight * 100)}%</span></div>`).join("");
   // Set the widths one frame later so the bars grow from zero.
   requestAnimationFrame(() => requestAnimationFrame(() =>
