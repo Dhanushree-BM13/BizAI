@@ -1,0 +1,253 @@
+Date,Company,Industry,Revenue_INR_Cr,Expenses_INR_Cr,Project_Success_Rate_Pct
+2023-01-01,Aravali Energy,Energy,6888.33,5853.56,89.8
+2023-02-01,Aravali Energy,Energy,7087.44,6066.94,90.8
+2023-03-01,Aravali Energy,Energy,7262.69,6144.46,94.1
+2023-04-01,Aravali Energy,Energy,7433.34,6312.69,92.7
+2023-05-01,Aravali Energy,Energy,7651.7,6509.7,90.2
+2023-06-01,Aravali Energy,Energy,7696.84,6545.66,90.1
+2023-07-01,Aravali Energy,Energy,7791.9,6558.21,90.4
+2023-08-01,Aravali Energy,Energy,7819.36,6650.5,94.8
+2023-09-01,Aravali Energy,Energy,7508.33,6451.46,89.9
+2023-10-01,Aravali Energy,Energy,7353.15,6172.82,90.2
+2023-11-01,Aravali Energy,Energy,7355.85,6295.46,91.9
+2023-12-01,Aravali Energy,Energy,7336.52,6241.99,90.7
+2024-01-01,Aravali Energy,Energy,7410.24,6266.38,90.5
+2024-02-01,Aravali Energy,Energy,7502.99,6479.6,88.2
+2024-03-01,Aravali Energy,Energy,7826.21,6692.85,91.0
+2024-04-01,Aravali Energy,Energy,8140.19,6852.78,89.9
+2024-05-01,Aravali Energy,Energy,8132.94,6917.12,93.9
+2024-06-01,Aravali Energy,Energy,8323.31,7107.45,92.6
+2024-07-01,Aravali Energy,Energy,8174.91,6938.18,90.9
+2024-08-01,Aravali Energy,Energy,8140.39,6957.13,92.7
+2024-09-01,Aravali Energy,Energy,7935.72,7956.89,73.3
+2024-10-01,Aravali Energy,Energy,7937.21,6782.64,93.6
+2024-11-01,Aravali Energy,Energy,7737.62,6652.66,91.0
+2024-12-01,Aravali Energy,Energy,7874.47,6657.12,92.5
+2025-01-01,Aravali Energy,Energy,7966.64,6782.65,87.8
+2025-02-01,Aravali Energy,Energy,8134.13,6888.39,91.9
+2025-03-01,Aravali Energy,Energy,8157.59,6941.01,86.8
+2025-04-01,Aravali Energy,Energy,8617.58,7255.37,85.9
+2025-05-01,Aravali Energy,Energy,8876.32,7509.9,90.2
+2025-06-01,Aravali Energy,Energy,9004.37,7641.7,88.8
+2025-07-01,Aravali Energy,Energy,8823.34,7553.77,91.4
+2025-08-01,Aravali Energy,Energy,7649.55,7576.64,79.0
+2025-09-01,Aravali Energy,Energy,8616.64,7246.6,88.9
+2025-10-01,Aravali Energy,Energy,8469.05,7152.93,89.4
+2025-11-01,Aravali Energy,Energy,8549.35,7304.55,91.5
+2025-12-01,Aravali Energy,Energy,8351.34,6985.5,92.2
+2023-01-01,Nilgiri Infotech,IT Services,1905.26,1441.51,92.0
+2023-02-01,Nilgiri Infotech,IT Services,1919.98,1459.28,89.6
+2023-03-01,Nilgiri Infotech,IT Services,2012.4,1524.83,87.5
+2023-04-01,Nilgiri Infotech,IT Services,2043.94,1549.67,93.4
+2023-05-01,Nilgiri Infotech,IT Services,1864.65,1566.47,76.1
+2023-06-01,Nilgiri Infotech,IT Services,2095.98,1582.66,90.6
+2023-07-01,Nilgiri Infotech,IT Services,2120.72,1633.08,92.4
+2023-08-01,Nilgiri Infotech,IT Services,2071.15,1565.62,93.0
+2023-09-01,Nilgiri Infotech,IT Services,2082.9,1569.66,93.1
+2023-10-01,Nilgiri Infotech,IT Services,2109.84,1607.81,93.3
+2023-11-01,Nilgiri Infotech,IT Services,2044.46,1571.28,89.9
+2023-12-01,Nilgiri Infotech,IT Services,2131.73,1601.27,94.8
+2024-01-01,Nilgiri Infotech,IT Services,2095.38,1589.83,87.9
+2024-02-01,Nilgiri Infotech,IT Services,2205.84,1667.96,93.2
+2024-03-01,Nilgiri Infotech,IT Services,2218.73,1662.48,92.2
+2024-04-01,Nilgiri Infotech,IT Services,2319.33,1773.05,93.2
+2024-05-01,Nilgiri Infotech,IT Services,2349.62,1785.38,95.7
+2024-06-01,Nilgiri Infotech,IT Services,2334.81,1775.47,94.7
+2024-07-01,Nilgiri Infotech,IT Services,2428.96,1834.9,88.1
+2024-08-01,Nilgiri Infotech,IT Services,2432.52,1855.44,86.8
+2024-09-01,Nilgiri Infotech,IT Services,2377.49,1799.1,93.0
+2024-10-01,Nilgiri Infotech,IT Services,2359.34,1791.05,88.5
+2024-11-01,Nilgiri Infotech,IT Services,2359.6,1777.4,91.0
+2024-12-01,Nilgiri Infotech,IT Services,2350.1,1768.7,93.1
+2025-01-01,Nilgiri Infotech,IT Services,2443.45,1876.86,86.9
+2025-02-01,Nilgiri Infotech,IT Services,2447.18,1852.31,85.7
+2025-03-01,Nilgiri Infotech,IT Services,2524.2,1922.87,91.6
+2025-04-01,Nilgiri Infotech,IT Services,2288.0,1948.59,77.1
+2025-05-01,Nilgiri Infotech,IT Services,2623.6,1986.9,90.4
+2025-06-01,Nilgiri Infotech,IT Services,2639.25,1997.68,91.1
+2025-07-01,Nilgiri Infotech,IT Services,2737.27,2090.81,88.8
+2025-08-01,Nilgiri Infotech,IT Services,2689.43,2039.03,87.2
+2025-09-01,Nilgiri Infotech,IT Services,2712.21,2058.78,90.6
+2025-10-01,Nilgiri Infotech,IT Services,2667.75,2027.85,88.6
+2025-11-01,Nilgiri Infotech,IT Services,2641.77,2026.64,86.9
+2025-12-01,Nilgiri Infotech,IT Services,2669.0,2039.48,92.3
+2023-01-01,Kaveri Systems,IT Services,1254.33,999.59,89.6
+2023-02-01,Kaveri Systems,IT Services,1296.26,1014.91,89.4
+2023-03-01,Kaveri Systems,IT Services,1326.27,1049.25,95.0
+2023-04-01,Kaveri Systems,IT Services,1384.26,1097.66,92.3
+2023-05-01,Kaveri Systems,IT Services,1353.96,1063.65,91.2
+2023-06-01,Kaveri Systems,IT Services,1408.27,1135.0,90.1
+2023-07-01,Kaveri Systems,IT Services,1397.59,1125.48,88.2
+2023-08-01,Kaveri Systems,IT Services,1394.95,1107.66,90.8
+2023-09-01,Kaveri Systems,IT Services,1361.46,1093.15,93.2
+2023-10-01,Kaveri Systems,IT Services,1368.1,1096.43,90.0
+2023-11-01,Kaveri Systems,IT Services,1383.48,1083.64,90.4
+2023-12-01,Kaveri Systems,IT Services,1375.15,1103.7,90.4
+2024-01-01,Kaveri Systems,IT Services,1394.63,1117.95,91.3
+2024-02-01,Kaveri Systems,IT Services,1415.3,1137.24,87.0
+2024-03-01,Kaveri Systems,IT Services,1473.56,1174.53,90.4
+2024-04-01,Kaveri Systems,IT Services,1486.64,1194.17,88.9
+2024-05-01,Kaveri Systems,IT Services,1475.13,1187.26,93.2
+2024-06-01,Kaveri Systems,IT Services,1520.5,1238.71,89.1
+2024-07-01,Kaveri Systems,IT Services,1503.1,1217.76,92.4
+2024-08-01,Kaveri Systems,IT Services,1475.28,1193.45,94.8
+2024-09-01,Kaveri Systems,IT Services,1514.89,1242.07,90.2
+2024-10-01,Kaveri Systems,IT Services,1537.96,1241.75,89.5
+2024-11-01,Kaveri Systems,IT Services,1509.69,1222.05,91.5
+2024-12-01,Kaveri Systems,IT Services,1493.32,1196.42,91.0
+2025-01-01,Kaveri Systems,IT Services,1515.77,1249.32,88.5
+2025-02-01,Kaveri Systems,IT Services,1583.96,1300.89,92.2
+2025-03-01,Kaveri Systems,IT Services,1602.28,1317.05,96.0
+2025-04-01,Kaveri Systems,IT Services,1637.17,1344.73,90.4
+2025-05-01,Kaveri Systems,IT Services,1666.09,1364.06,90.5
+2025-06-01,Kaveri Systems,IT Services,1687.86,1384.74,88.4
+2025-07-01,Kaveri Systems,IT Services,1710.31,1399.63,91.8
+2025-08-01,Kaveri Systems,IT Services,1700.42,1393.77,87.9
+2025-09-01,Kaveri Systems,IT Services,1681.91,1383.13,88.2
+2025-10-01,Kaveri Systems,IT Services,1644.78,1548.12,82.0
+2025-11-01,Kaveri Systems,IT Services,1670.42,1382.54,88.7
+2025-12-01,Kaveri Systems,IT Services,1437.82,1363.02,79.3
+2023-01-01,Sahyadri Cloud,Technology,4424.27,3188.44,95.0
+2023-02-01,Sahyadri Cloud,Technology,4602.09,3282.99,89.4
+2023-03-01,Sahyadri Cloud,Technology,4689.4,3406.4,91.4
+2023-04-01,Sahyadri Cloud,Technology,4698.88,3411.95,86.8
+2023-05-01,Sahyadri Cloud,Technology,4808.99,3492.52,90.0
+2023-06-01,Sahyadri Cloud,Technology,4914.82,4186.51,76.7
+2023-07-01,Sahyadri Cloud,Technology,5023.28,3631.65,87.9
+2023-08-01,Sahyadri Cloud,Technology,5031.82,3619.08,93.7
+2023-09-01,Sahyadri Cloud,Technology,5082.26,3647.85,91.8
+2023-10-01,Sahyadri Cloud,Technology,5111.94,3670.61,88.4
+2023-11-01,Sahyadri Cloud,Technology,5113.58,3643.49,89.7
+2023-12-01,Sahyadri Cloud,Technology,5192.25,3695.24,89.9
+2024-01-01,Sahyadri Cloud,Technology,5300.2,3840.39,90.9
+2024-02-01,Sahyadri Cloud,Technology,5400.93,3882.72,89.7
+2024-03-01,Sahyadri Cloud,Technology,5576.39,4021.95,88.9
+2024-04-01,Sahyadri Cloud,Technology,5809.88,4216.63,90.2
+2024-05-01,Sahyadri Cloud,Technology,5850.61,4154.03,88.4
+2024-06-01,Sahyadri Cloud,Technology,5915.97,4232.78,87.8
+2024-07-01,Sahyadri Cloud,Technology,5863.83,4227.88,90.9
+2024-08-01,Sahyadri Cloud,Technology,6059.07,4376.21,93.2
+2024-09-01,Sahyadri Cloud,Technology,5919.27,4249.01,87.2
+2024-10-01,Sahyadri Cloud,Technology,5987.27,4346.32,91.0
+2024-11-01,Sahyadri Cloud,Technology,6198.81,4470.66,89.4
+2024-12-01,Sahyadri Cloud,Technology,6263.58,4466.0,88.6
+2025-01-01,Sahyadri Cloud,Technology,6309.97,4509.35,93.1
+2025-02-01,Sahyadri Cloud,Technology,6331.32,4587.92,89.7
+2025-03-01,Sahyadri Cloud,Technology,6597.66,4767.94,94.7
+2025-04-01,Sahyadri Cloud,Technology,6738.53,4778.03,89.1
+2025-05-01,Sahyadri Cloud,Technology,6998.84,5093.49,92.0
+2025-06-01,Sahyadri Cloud,Technology,7260.02,5252.22,90.4
+2025-07-01,Sahyadri Cloud,Technology,7174.32,5221.02,89.1
+2025-08-01,Sahyadri Cloud,Technology,6239.85,5127.41,75.5
+2025-09-01,Sahyadri Cloud,Technology,7144.67,5131.99,90.6
+2025-10-01,Sahyadri Cloud,Technology,7276.7,5192.01,92.5
+2025-11-01,Sahyadri Cloud,Technology,7320.61,5377.82,90.9
+2025-12-01,Sahyadri Cloud,Technology,7323.3,5265.38,88.3
+2023-01-01,Surya Kiran Solar,Renewable Energy,10.47,8.62,91.0
+2023-02-01,Surya Kiran Solar,Renewable Energy,10.9,9.12,87.6
+2023-03-01,Surya Kiran Solar,Renewable Energy,11.81,9.71,91.2
+2023-04-01,Surya Kiran Solar,Renewable Energy,12.67,10.5,87.6
+2023-05-01,Surya Kiran Solar,Renewable Energy,11.56,10.54,73.8
+2023-06-01,Surya Kiran Solar,Renewable Energy,13.28,10.94,90.3
+2023-07-01,Surya Kiran Solar,Renewable Energy,13.45,11.28,85.8
+2023-08-01,Surya Kiran Solar,Renewable Energy,13.25,11.07,91.2
+2023-09-01,Surya Kiran Solar,Renewable Energy,13.21,10.93,91.4
+2023-10-01,Surya Kiran Solar,Renewable Energy,12.73,10.49,90.6
+2023-11-01,Surya Kiran Solar,Renewable Energy,12.57,10.28,89.9
+2023-12-01,Surya Kiran Solar,Renewable Energy,12.85,10.63,90.1
+2024-01-01,Surya Kiran Solar,Renewable Energy,13.02,10.81,88.6
+2024-02-01,Surya Kiran Solar,Renewable Energy,13.87,11.51,90.3
+2024-03-01,Surya Kiran Solar,Renewable Energy,14.46,12.0,89.6
+2024-04-01,Surya Kiran Solar,Renewable Energy,15.27,12.56,91.2
+2024-05-01,Surya Kiran Solar,Renewable Energy,15.86,13.16,88.0
+2024-06-01,Surya Kiran Solar,Renewable Energy,17.05,14.14,91.6
+2024-07-01,Surya Kiran Solar,Renewable Energy,16.74,14.04,91.4
+2024-08-01,Surya Kiran Solar,Renewable Energy,16.69,14.06,90.6
+2024-09-01,Surya Kiran Solar,Renewable Energy,16.28,13.5,89.9
+2024-10-01,Surya Kiran Solar,Renewable Energy,15.95,13.16,92.4
+2024-11-01,Surya Kiran Solar,Renewable Energy,15.72,13.04,86.8
+2024-12-01,Surya Kiran Solar,Renewable Energy,16.17,13.36,92.2
+2025-01-01,Surya Kiran Solar,Renewable Energy,16.08,13.27,91.6
+2025-02-01,Surya Kiran Solar,Renewable Energy,16.78,13.92,91.7
+2025-03-01,Surya Kiran Solar,Renewable Energy,17.91,14.74,92.0
+2025-04-01,Surya Kiran Solar,Renewable Energy,18.88,15.75,89.4
+2025-05-01,Surya Kiran Solar,Renewable Energy,20.27,16.81,90.4
+2025-06-01,Surya Kiran Solar,Renewable Energy,20.86,17.35,92.6
+2025-07-01,Surya Kiran Solar,Renewable Energy,20.58,17.05,92.1
+2025-08-01,Surya Kiran Solar,Renewable Energy,20.27,16.72,91.5
+2025-09-01,Surya Kiran Solar,Renewable Energy,20.09,18.58,70.2
+2025-10-01,Surya Kiran Solar,Renewable Energy,20.05,16.61,92.3
+2025-11-01,Surya Kiran Solar,Renewable Energy,18.8,15.54,93.9
+2025-12-01,Surya Kiran Solar,Renewable Energy,19.71,16.39,93.5
+2023-01-01,Vindhya Consulting,Consulting,785.56,691.21,90.4
+2023-02-01,Vindhya Consulting,Consulting,812.61,720.65,93.7
+2023-03-01,Vindhya Consulting,Consulting,809.83,699.29,88.7
+2023-04-01,Vindhya Consulting,Consulting,829.09,732.6,88.9
+2023-05-01,Vindhya Consulting,Consulting,852.43,758.53,91.5
+2023-06-01,Vindhya Consulting,Consulting,851.87,760.16,89.2
+2023-07-01,Vindhya Consulting,Consulting,729.62,745.4,79.5
+2023-08-01,Vindhya Consulting,Consulting,810.9,728.67,91.7
+2023-09-01,Vindhya Consulting,Consulting,782.11,699.39,88.7
+2023-10-01,Vindhya Consulting,Consulting,768.67,688.47,91.2
+2023-11-01,Vindhya Consulting,Consulting,764.38,688.42,90.1
+2023-12-01,Vindhya Consulting,Consulting,756.82,675.57,93.3
+2024-01-01,Vindhya Consulting,Consulting,755.42,678.15,89.4
+2024-02-01,Vindhya Consulting,Consulting,771.91,699.36,89.9
+2024-03-01,Vindhya Consulting,Consulting,768.07,702.87,94.0
+2024-04-01,Vindhya Consulting,Consulting,787.07,709.42,96.6
+2024-05-01,Vindhya Consulting,Consulting,802.69,725.35,96.0
+2024-06-01,Vindhya Consulting,Consulting,802.21,727.56,91.2
+2024-07-01,Vindhya Consulting,Consulting,799.5,732.94,91.5
+2024-08-01,Vindhya Consulting,Consulting,778.76,707.34,94.8
+2024-09-01,Vindhya Consulting,Consulting,754.02,694.23,90.7
+2024-10-01,Vindhya Consulting,Consulting,741.94,671.05,88.6
+2024-11-01,Vindhya Consulting,Consulting,716.06,652.79,91.3
+2024-12-01,Vindhya Consulting,Consulting,703.75,642.56,92.1
+2025-01-01,Vindhya Consulting,Consulting,724.01,667.36,88.9
+2025-02-01,Vindhya Consulting,Consulting,726.5,672.14,86.9
+2025-03-01,Vindhya Consulting,Consulting,741.59,673.29,87.4
+2025-04-01,Vindhya Consulting,Consulting,735.32,671.91,92.7
+2025-05-01,Vindhya Consulting,Consulting,672.03,698.0,73.6
+2025-06-01,Vindhya Consulting,Consulting,753.76,692.43,90.6
+2025-07-01,Vindhya Consulting,Consulting,744.49,680.26,91.5
+2025-08-01,Vindhya Consulting,Consulting,718.69,671.39,92.5
+2025-09-01,Vindhya Consulting,Consulting,718.4,669.31,90.2
+2025-10-01,Vindhya Consulting,Consulting,711.62,664.06,92.2
+2025-11-01,Vindhya Consulting,Consulting,693.91,643.57,88.8
+2025-12-01,Vindhya Consulting,Consulting,679.23,638.6,90.1
+2023-01-01,Konkan Retail,Retail,562.51,504.5,90.5
+2023-02-01,Konkan Retail,Retail,597.08,539.46,93.3
+2023-03-01,Konkan Retail,Retail,643.48,579.92,91.7
+2023-04-01,Konkan Retail,Retail,709.55,643.1,91.3
+2023-05-01,Konkan Retail,Retail,729.01,663.82,94.9
+2023-06-01,Konkan Retail,Retail,733.92,657.17,89.3
+2023-07-01,Konkan Retail,Retail,734.19,669.95,91.2
+2023-08-01,Konkan Retail,Retail,719.85,647.15,89.7
+2023-09-01,Konkan Retail,Retail,664.18,605.85,94.7
+2023-10-01,Konkan Retail,Retail,626.45,569.57,86.1
+2023-11-01,Konkan Retail,Retail,611.58,555.15,89.3
+2023-12-01,Konkan Retail,Retail,598.49,544.31,89.7
+2024-01-01,Konkan Retail,Retail,613.77,556.12,92.7
+2024-02-01,Konkan Retail,Retail,637.98,577.72,92.5
+2024-03-01,Konkan Retail,Retail,702.13,630.34,94.5
+2024-04-01,Konkan Retail,Retail,746.1,678.79,87.1
+2024-05-01,Konkan Retail,Retail,679.94,711.41,76.8
+2024-06-01,Konkan Retail,Retail,786.63,822.57,77.9
+2024-07-01,Konkan Retail,Retail,754.07,693.46,89.3
+2024-08-01,Konkan Retail,Retail,751.54,687.76,92.3
+2024-09-01,Konkan Retail,Retail,705.49,638.52,88.7
+2024-10-01,Konkan Retail,Retail,671.51,618.12,85.8
+2024-11-01,Konkan Retail,Retail,645.24,586.9,90.1
+2024-12-01,Konkan Retail,Retail,629.07,572.14,87.3
+2025-01-01,Konkan Retail,Retail,633.3,574.96,89.4
+2025-02-01,Konkan Retail,Retail,684.5,623.35,91.9
+2025-03-01,Konkan Retail,Retail,722.13,654.85,91.8
+2025-04-01,Konkan Retail,Retail,773.12,703.06,95.0
+2025-05-01,Konkan Retail,Retail,806.5,727.55,90.5
+2025-06-01,Konkan Retail,Retail,824.95,748.46,87.2
+2025-07-01,Konkan Retail,Retail,797.8,739.24,89.1
+2025-08-01,Konkan Retail,Retail,803.4,730.68,88.7
+2025-09-01,Konkan Retail,Retail,753.03,683.95,88.0
+2025-10-01,Konkan Retail,Retail,718.69,656.79,92.1
+2025-11-01,Konkan Retail,Retail,695.61,636.6,89.4
+2025-12-01,Konkan Retail,Retail,670.8,604.99,86.1

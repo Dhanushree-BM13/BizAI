@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BizAI – Smart Business Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ---------- Theme: a financial broadsheet. Paper, ink, one accent. ---------- */
+:root{--paper:#F3EEE3;--wash:#E9E2D3;--ink:#17130E;--mute:#6A6155;--rule:rgba(23,19,14,.17);--accent:#C2380F;--pos:#1F6B45;--neg:#B3261E;--amb:#8F5A06;
+--serif:"Fraunces",Georgia,serif;--sans:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;--ease:cubic-bezier(.2,.8,.2,1)}
+:root[data-theme=dark]{--paper:#12100D;--wash:#1D1A15;--ink:#EFE7D8;--mute:#9D9385;--rule:rgba(239,231,216,.17);--accent:#FF6B3D;--pos:#6FCB95;--neg:#FF8170;--amb:#E5A94B;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.55 var(--sans);transition:background .4s,color .4s;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+h1,h2,p,ul,ol{margin:0}ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit}:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.label{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}.label.accent{color:var(--accent)}
+.pos{color:var(--pos)}.neg{color:var(--neg)}.amb{color:var(--amb)}.mute{color:var(--mute)}
+
+/* ---------- Masthead and ticker ---------- */
+.mast{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:16px;padding:18px 32px 12px;border-bottom:3px double var(--ink)}
+.brand{font:italic 800 34px/1 var(--serif);letter-spacing:-.02em}.brand span{color:var(--accent)}
+.edition{font:400 12px/1.2 var(--mono);color:var(--mute);text-align:center}
+.tools{display:flex;justify-content:flex-end;gap:8px}
+.btn{all:unset;cursor:pointer;font:500 12px/1 var(--mono);letter-spacing:.04em;padding:8px 12px;border:1px solid var(--ink);transition:background .2s,color .2s}
+.btn:hover{background:var(--ink);color:var(--paper)}.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ticker{overflow:hidden;border-bottom:1px solid var(--rule);background:var(--wash)}
+.track{display:flex;width:max-content;animation:marquee 45s linear infinite}.ticker:hover .track,.ticker:focus-within .track{animation-play-state:paused}
+.track.still{animation:none}.track.still .copy{display:none}.copy{display:contents}
+.tick{all:unset;cursor:pointer;white-space:nowrap;padding:8px 22px;font:400 12px/1 var(--mono);border-right:1px solid var(--rule)}.tick b{font-weight:500;margin:0 6px}.tick:hover{background:var(--paper)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ---------- Layout ---------- */
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1320px;margin:0 auto}
+aside{padding:26px 20px 26px 32px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:4px}
+@media (min-width:881px){aside{position:sticky;top:0;height:100vh;overflow:auto}}
+main{padding:34px 32px 60px 40px;min-width:0;view-transition-name:stage;transition:opacity .25s}main[aria-busy=true]{opacity:.4;pointer-events:none}
+section{margin-top:44px}.two{display:grid;grid-template-columns:1fr 1fr;gap:40px}.two section{min-width:0}
+h2{font:600 22px/1.2 var(--serif);letter-spacing:-.01em;margin:6px 0 16px}
+.head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;border-top:1px solid var(--ink);padding-top:10px}.head h2{margin-bottom:12px}
+
+/* ---------- Company index ---------- */
+aside>.label{margin:0 0 10px}
+.co{all:unset;cursor:pointer;position:relative;display:grid;grid-template-columns:24px 1fr auto;gap:6px;align-items:baseline;padding:9px 8px 9px 12px;border-bottom:1px solid var(--rule);transition:padding .3s var(--ease),background .2s}
+.co:hover{background:var(--wash);padding-left:18px}.co:focus-visible{outline:2px solid var(--accent)}
+.co .n{font:400 11px var(--mono);color:var(--mute)}.co small{font:500 12px var(--mono)}
+.co[aria-pressed=true]{font-weight:600;padding-left:18px}
+.mark{position:absolute;left:0;top:6px;bottom:6px;width:4px;background:var(--accent);view-transition-name:mark}
+.up{margin-top:auto;padding:14px;border:1px dashed var(--mute);font-size:13px;transition:background .2s,border-color .2s}
+.up>*{display:block;margin-top:8px}.up>:first-child{margin-top:0}.up label{font-weight:600}.up label span{font-weight:400;color:var(--mute)}
+.up input{display:block;margin-top:8px;max-width:100%;font-size:12px}.up a{color:var(--accent)}.up.drag{background:var(--wash);border-color:var(--accent)}
+#msg{color:var(--neg)}.up .btn{width:max-content}
+
+/* ---------- Lead story ---------- */
+.hero{margin-top:0;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:44px;align-items:end}
+h1{font:500 clamp(2rem,4.4vw,3.9rem)/1.04 var(--serif);letter-spacing:-.025em;margin:14px 0 16px;font-variation-settings:"opsz" 144}
+h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.w{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .06em .14em 0;margin:0 -.06em -.14em 0}
+.w>span{display:inline-block;animation:rise .8s var(--ease) both}@keyframes rise{from{transform:translateY(110%)}}
+.lede{color:var(--mute);max-width:58ch}
+.score{border-top:3px solid var(--ink);padding-top:10px}
+.big{font:500 92px/.9 var(--serif);letter-spacing:-.04em;margin:8px 0 2px;font-variant-numeric:lining-nums tabular-nums}.big small{font:400 14px var(--mono);letter-spacing:0;color:var(--mute);margin-left:6px}
+.verdict{font:italic 400 20px var(--serif)}
+.gauge{position:relative;height:6px;margin:16px 0 22px;background:linear-gradient(90deg,var(--neg) 0 50%,var(--amb) 50% 70%,var(--pos) 70%)}
+.gauge i{position:absolute;top:-7px;left:0;width:3px;height:20px;margin-left:-1px;background:var(--ink);transition:left 1.1s var(--ease)}
+.gauge span{position:absolute;top:12px;font:400 10px var(--mono);color:var(--mute);transform:translateX(-50%)}
+
+/* ---------- Key figures ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+.k{padding:16px 18px 14px;border-left:1px solid var(--rule)}.k:first-child{border-left:0;padding-left:0}
+.k b{display:block;font:500 30px/1.1 var(--serif);letter-spacing:-.02em;margin:10px 0 4px;font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+.k i{font:normal 400 12px var(--mono);display:block}
+.spark{display:block;width:100%;height:28px;margin-top:10px;color:var(--mute)}
+.spark polyline{fill:none;stroke:currentColor;stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s .35s cubic-bezier(.6,0,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ---------- Chart ---------- */
+.cv{position:relative;height:340px}.cv.wipe canvas{animation:wipe 1.3s cubic-bezier(.65,0,.2,1) both}@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+.caption{font:italic 400 14px/1.5 var(--serif);color:var(--mute);margin-top:12px;max-width:80ch}
+.seg{display:flex;border:1px solid var(--ink);margin-bottom:12px}.seg button{all:unset;cursor:pointer;font:500 12px/1 var(--mono);padding:7px 12px;transition:background .2s,color .2s}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--paper)}.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- Lists ---------- */
+#flags li,#actions li{padding:14px 0;border-bottom:1px solid var(--rule)}
+#flags li{cursor:crosshair;transition:background .2s,padding .3s var(--ease)}#flags li[data-flag]:hover,#flags li:focus-visible{background:var(--wash);padding-left:10px}
+#flags b{display:block;font:italic 500 20px var(--serif)}
+#actions{counter-reset:step}#actions li{display:grid;grid-template-columns:44px 1fr;counter-increment:step}
+#actions li::before{content:counter(step,decimal-leading-zero);font:300 28px/1 var(--serif);color:var(--accent)}
+
+/* ---------- Simulator and score parts ---------- */
+.sl{display:block;margin-bottom:16px;font-size:14px}.sl b{float:right;font:500 13px var(--mono)}.sl input{width:100%;accent-color:var(--accent);margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:8px 0;border-bottom:1px solid var(--rule);text-align:right;font-weight:400}
+td:first-child,th:first-child{text-align:left}th{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+td.fig{font:400 13px var(--mono)}#simGain{display:block;margin:12px 0;font:italic 500 20px var(--serif)}
+.hp{display:grid;grid-template-columns:7.5em 1fr 6em;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.hp span:last-child{text-align:right;font:400 12px var(--mono);color:var(--mute)}
+.bar{height:4px;background:var(--rule)}.bar i{display:block;height:100%;width:0;background:var(--ink);transition:width 1s var(--ease)}
+
+/* ---------- Quick answers ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{all:unset;cursor:pointer;font:400 13px var(--sans);padding:7px 14px;border:1px solid var(--rule);border-radius:99px;transition:border-color .2s,background .2s,color .2s}
+.chip:hover{border-color:var(--ink)}.chip[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#answer{font:400 clamp(1.2rem,2.2vw,1.7rem)/1.35 var(--serif);margin-top:20px;padding-left:20px;border-left:3px solid var(--accent);max-width:46ch;min-height:4em}
+
+/* ---------- League table ---------- */
+#league td{padding:10px 0}#league td:nth-child(2),#league th:nth-child(2){text-align:left}#league .rk{font:300 22px var(--serif);color:var(--mute);width:44px}
+#league button{all:unset;cursor:pointer;font-weight:600;border-bottom:1px solid transparent;transition:border-color .2s}#league button:hover{border-color:var(--accent)}#league button:focus-visible{outline:2px solid var(--accent)}
+#league .spark{width:110px;margin:0 0 0 auto}#league tr{transition:background .2s}#league tbody tr:hover{background:var(--wash)}
+.note{color:var(--mute);font-size:13px;margin-top:44px;max-width:76ch;border-top:1px solid var(--rule);padding-top:14px}
+
+/* ---------- Motion: scroll reveal and company change ---------- */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease)}.reveal.in{opacity:1;transform:none}
+::view-transition-old(stage){animation:leave .18s ease-in both}::view-transition-new(stage){animation:enter .5s var(--ease) both}
+@keyframes leave{to{opacity:0;transform:translateY(-8px)}}@keyframes enter{from{opacity:0;transform:translateY(14px)}}
+::view-transition-group(mark){animation-duration:.45s;animation-timing-function:var(--ease)}
+@media (prefers-reduced-motion:reduce){*,::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important;transition:none!important}
+.reveal{opacity:1;transform:none}.spark polyline{stroke-dashoffset:0}.ticker{overflow-x:auto}.copy{display:none}}
+
+/* ---------- Small screens and print ---------- */
+@media (max-width:880px){.app{grid-template-columns:1fr}.mast{grid-template-columns:1fr auto;padding:14px 16px 10px}.edition{display:none}
+aside{padding:14px 16px;border-right:0;border-bottom:1px solid var(--rule)}nav{display:flex;overflow-x:auto;gap:6px}.co{display:flex;white-space:nowrap;border:1px solid var(--rule);padding:8px 12px}.co .n,.mark{display:none}.up{margin-top:12px}
+main{padding:24px 16px 40px}.hero,.two{grid-template-columns:1fr;gap:0}.kpis{grid-template-columns:1fr 1fr}.k{padding-left:0;border-left:0;border-bottom:1px solid var(--rule)}.k:nth-child(even){padding-left:16px;border-left:1px solid var(--rule)}
+#league .spark,#league .hide{display:none}}
+@media print{aside,.ticker,.tools,.seg,.sl,.chips,#simReset{display:none!important}.app{display:block}main{padding:0}.reveal{opacity:1!important;transform:none!important}section,.kpis{break-inside:avoid}body{background:#fff}}
+</style></head><body>
+
+<header class="mast">
+  <div class="brand">BizAI<span>.</span></div>
+  <p class="edition" id="edition">Monthly business review</p>
+  <div class="tools"><button class="btn" id="themeToggle"></button><button class="btn" id="printReport">Print report</button></div>
+</header>
+<div class="ticker" aria-label="All companies at a glance"><div class="track" id="ticker"></div></div>
+
+<div class="app">
+<aside>
+  <p class="label">Companies</p>
+  <nav id="companyList" aria-label="Companies"></nav>
+  <div class="up" id="dropZone">
+    <label>Analyse your own data<br><span>Drop a CSV or Excel file here, or choose one</span><input id="fileInput" type="file" accept=".csv,.xlsx,.xls"></label>
+    <span id="msg" role="alert"></span>
+    <span id="source" role="status"></span>
+    <button class="btn" id="useSample" hidden>Back to sample data</button>
+    <a href="api/sample.csv" download>Download a sample file</a>
+  </div>
+</aside>
+
+<main id="main" aria-busy="true">
+  <section class="hero">
+    <div>
+      <p class="label accent" id="kicker">&nbsp;</p>
+      <h1 id="headline">Loading…</h1>
+      <p class="lede" id="lede"></p>
+    </div>
+    <div class="score">
+      <p class="label">Health score</p>
+      <p class="big"><span id="scoreNumber">0</span><small>/100</small></p>
+      <p class="verdict" id="scoreLabel">&nbsp;</p>
+      <div class="gauge" id="gauge" role="img"><i id="gaugeMark"></i><span style="left:0">0</span><span style="left:50%">50</span><span style="left:70%">70</span><span style="left:100%">100</span></div>
+    </div>
+  </section>
+
+  <div class="kpis reveal" id="kpis"></div>
+
+  <section class="reveal">
+    <div class="head"><div><p class="label">Fig. 1</p><h2>Revenue and expenses, with a 3-month forecast</h2></div>
+      <div class="seg" id="range" role="group" aria-label="Chart period"><button data-months="12" aria-pressed="false">1 year</button><button data-months="0" aria-pressed="true">All</button></div></div>
+    <div class="cv" id="chartBox"><canvas id="chart" role="img" aria-label="Revenue and expense trend with forecast, in rupees crore"></canvas></div>
+    <p class="caption" id="backtest"></p>
+  </section>
+
+  <div class="two">
+    <section class="reveal"><div class="head"><div><p class="label">Watch list</p><h2>Unusual months</h2></div></div><ul id="flags"></ul></section>
+    <section class="reveal"><div class="head"><div><p class="label">Next steps</p><h2>What management could do</h2></div></div><ol id="actions"></ol></section>
+  </div>
+
+  <div class="two">
+    <section class="reveal">
+      <div class="head"><div><p class="label">What if</p><h2>Simulator, next 3 months</h2></div></div>
+      <label class="sl">Cut expenses by <b id="cutValue">0%</b><input type="range" id="cutSlider" min="0" max="15" step="1" value="0"></label>
+      <label class="sl">Change monthly revenue growth by <b id="growthValue">0 pts</b><input type="range" id="growthSlider" min="-3" max="3" step="0.5" value="0"></label>
+      <table><tr><th></th><th>Baseline</th><th>Scenario</th></tr>
+        <tr><td>Profit</td><td class="fig" id="simBaseProfit"></td><td class="fig" id="simNewProfit"></td></tr>
+        <tr><td>Margin</td><td class="fig" id="simBaseMargin"></td><td class="fig" id="simNewMargin"></td></tr></table>
+      <span id="simGain"></span>
+      <button class="btn" id="simReset">Reset</button>
+    </section>
+    <section class="reveal">
+      <div class="head"><div><p class="label">Method</p><h2>How the health score is built</h2></div></div>
+      <div id="healthParts"></div>
+      <p class="caption">Each part is scored 0–100, then combined using the weights shown.</p>
+    </section>
+  </div>
+
+  <section class="reveal">
+    <div class="head"><div><p class="label">In brief</p><h2>Quick answers</h2></div></div>
+    <div class="chips" id="chips">
+      <button class="chip" data-topic="summary">How is it performing?</button>
+      <button class="chip" data-topic="trend">Is it growing or declining?</button>
+      <button class="chip" data-topic="forecast">What could revenue look like next?</button>
+      <button class="chip" data-topic="risks">What risks could affect it?</button>
+      <button class="chip" data-topic="actions">What should management do?</button>
+    </div>
+    <p id="answer" aria-live="polite"></p>
+  </section>
+
+  <section class="reveal">
+    <div class="head"><div><p class="label">League table</p><h2>All companies, ranked by health</h2></div></div>
+    <table id="league"></table>
+  </section>
+
+  <p class="note">Sample data is synthetic: the companies and figures are invented for demonstration. The forecast is a statistical projection of each company’s own history, and the shaded band is an approximate 80% range, not a guarantee. A month is flagged when its profit margin sits far from the company’s own average.</p>
+</main></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// All analysis happens on the server (analytics.py). This script only draws and animates the result.
+
+// ---------- Helpers ----------
+const $ = id => document.getElementById(id);
+const sum = list => list.reduce((total, x) => total + x, 0);
+const signed = (x, digits = 1) => (x > 0 ? "+" : "") + x.toFixed(digits);
+const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+// Small companies report figures like ₹11.43 Cr, so keep decimals below 100.
+const money = x => "₹" + x.toLocaleString("en-IN", { maximumFractionDigits: Math.abs(x) < 100 ? 2 : 0 }) + " Cr";
+// Company names come from uploaded files, so escape them before putting them in HTML.
+const escapeHtml = text => String(text).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+const healthClass = score => score >= 70 ? "pos" : score >= 50 ? "amb" : "neg";
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---------- State ----------
+let companies = {};   // { company name: analysis from the server }
+let current = "";     // name of the company on screen
+let topic = "summary";
+let chart;
+let chartMonths = 0;  // months of history on the chart; 0 means all
+let chartStart = 0;   // index of the first month drawn
+
+// ---------- Motion helpers ----------
+// Count a number up (or down) from the value last shown under `key` to `target`.
+const lastShown = {};
+function countTo(element, key, target, format) {
+  const from = lastShown[key] ?? 0;
+  lastShown[key] = target;
+  if (reducedMotion || from === target) { element.textContent = format(target); return; }
+  const startTime = performance.now(), duration = 900;
+  function frame(now) {
+    if (lastShown[key] !== target) return;  // a newer animation took over
+    const progress = Math.min(1, (now - startTime) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    element.textContent = format(from + (target - from) * eased);
+    if (progress < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+// Wrap each word so it can slide up from behind a mask, one after another.
+function words(text, firstDelay = 0) {
+  return text.split(" ").map((word, i) =>
+    `<span class="w"><span style="animation-delay:${firstDelay + i * 35}ms">${escapeHtml(word)}</span></span>`).join(" ");
+}
+
+// A tiny line chart that draws itself. Shows the last 12 values.
+function sparkline(values) {
+  const recent = values.slice(-12), min = Math.min(...recent), span = (Math.max(...recent) - min) || 1;
+  const points = recent.map((v, i) => `${(i / (recent.length - 1) * 100).toFixed(1)},${(26 - (v - min) / span * 24).toFixed(1)}`).join(" ");
+  return `<svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true"><polyline points="${points}" pathLength="1"/></svg>`;
+}
+
+// Fade sections in as they scroll into view.
+const revealer = new IntersectionObserver(entries => entries.forEach(entry => {
+  if (entry.isIntersecting) { entry.target.classList.add("in"); revealer.unobserve(entry.target); }
+}), { threshold: 0.1 });
+document.querySelectorAll(".reveal").forEach(element => revealer.observe(element));
+
+// ---------- Rendering ----------
+function show(data) {
+  companies = data;
+  current = Object.keys(companies)[0];
+  renderTicker();
+  renderLeague();
+  render();
+}
+
+// Switch company with a page transition where the browser supports it.
+function select(name) {
+  if (!companies[name] || name === current) return;
+  current = name;
+  if (document.startViewTransition && !reducedMotion) document.startViewTransition(render);
+  else render();
+}
+
+function render() {
+  const company = companies[current];
+  if (!company) return;
+  renderCompanyList();
+  renderHero(company);
+  renderKpis(company);
+  renderChart(company);
+  renderFlags(company);
+  renderHealthParts(company);
+  renderSimulator();
+  renderAnswer();
+  $("actions").innerHTML = company.actions.map(text => `<li><span>${escapeHtml(text)}</span></li>`).join("");
+}
+
+function renderTicker() {
+  const names = Object.keys(companies);
+  const items = names.map(name => {
+    const company = companies[name], up = company.growth >= 0;
+    return `<button class="tick" data-name="${escapeHtml(name)}">${escapeHtml(name)}<b>${company.health.score}</b>` +
+      `<span class="${up ? "pos" : "neg"}">${up ? "▲" : "▼"} ${Math.abs(company.growth).toFixed(1)}%/mo</span></button>`;
+  }).join("");
+  // The strip is repeated once so the scroll can loop without a gap. The copy is hidden from keyboards and screen readers.
+  $("ticker").innerHTML = items + `<span class="copy" aria-hidden="true">${items.replaceAll("<button", '<button tabindex="-1"')}</span>`;
+  $("ticker").classList.toggle("still", names.length < 4);
+}
+
+function renderCompanyList() {
+  $("companyList").innerHTML = Object.keys(companies).map((name, i) => {
+    const active = name === current, score = companies[name].health.score;
+    return `<button class="co" aria-pressed="${active}" data-name="${escapeHtml(name)}">${active ? '<i class="mark"></i>' : ""}` +
+      `<span class="n">${String(i + 1).padStart(2, "0")}</span><span>${escapeHtml(name)}</span><small class="${healthClass(score)}">${score}</small></button>`;
+  }).join("");
+}
+
+function worstMonth(company) {
+  return company.flags.filter(flag => flag.z < 0).sort((a, b) => a.z - b.z)[0];
+}
+
+function renderHero(company) {
+  const trend = company.growth >= 0
+    ? `growing about ${company.growth.toFixed(1)}% a month,`
+    : `slipping about ${Math.abs(company.growth).toFixed(1)}% a month,`;
+  const worst = worstMonth(company);
+  const opening = `${current} is ${trend}`;
+  const twist = worst ? `but ${worst.cause} broke the pattern in ${worst.month}.` : "with margins holding steady.";
+  $("headline").innerHTML = words(opening) + " <em>" + words(twist, opening.split(" ").length * 35) + "</em>";
+  $("kicker").textContent = company.industry;
+  $("lede").textContent = `Latest month ${company.latest_month}. Forecast and risk checks below are generated from this company’s own history.`;
+  $("edition").textContent = `Monthly business review · ${company.latest_month}`;
+
+  const { score, label } = company.health;
+  countTo($("scoreNumber"), "score", score, x => Math.round(x));
+  $("scoreLabel").textContent = label;
+  $("scoreLabel").className = "verdict " + healthClass(score);
+  $("gaugeMark").style.left = score + "%";
+  $("gauge").setAttribute("aria-label", `Health score ${score} out of 100: ${label}. Below 50 is at risk, 70 and above is strong.`);
+}
+
+function renderKpis(company) {
+  const last = company.revenue.length - 1;
+  const revenueChange = (company.revenue[last] / company.revenue[last - 1] - 1) * 100;
+  const marginChange = company.margin[last] - company.margin[last - 1];
+  const percent = x => x.toFixed(1) + "%";
+  // Each KPI: label, value, formatter, note, direction (true up, false down, null none), sparkline data.
+  const kpis = [
+    ["Revenue, latest month", company.revenue[last], money, `${signed(revenueChange)}% vs prior month`, revenueChange >= 0, company.revenue],
+    ["Profit margin", company.margin[last], percent, `${signed(marginChange)} pts vs prior month`, marginChange >= 0, company.margin],
+    ["Next 3 months revenue", sum(company.forecast.revenue), money, `likely range ±${money(company.forecast.band * 3)}`, null, company.revenue.slice(-9).concat(company.forecast.revenue)],
+  ];
+  if (company.success) {
+    const successChange = company.success[last] - company.success[last - 1];
+    kpis.push(["Project success rate", company.success[last], percent, `${signed(successChange)} pts vs prior month`, successChange >= 0, company.success]);
+  }
+  // The arrow means colour is not the only signal of direction.
+  $("kpis").innerHTML = kpis.map(([name, , , note, up, series], i) =>
+    `<div class="k"><span class="label">${name}</span><b id="kpi${i}"></b>` +
+    `<i class="${up === null ? "mute" : up ? "pos" : "neg"}">${up === null ? "" : up ? "▲ " : "▼ "}${note}</i>${sparkline(series)}</div>`).join("") +
+    (company.success ? "" : `<div class="k"><span class="label">Project success rate</span><b>n/a</b><i class="mute">add a Project_Success column</i></div>`);
+  kpis.forEach(([, value, format], i) => countTo($("kpi" + i), "kpi" + i, value, format));
+}
+
+// Draws a dotted vertical line through the month under the cursor.
+const hoverLine = {
+  id: "hoverLine",
+  afterDatasetsDraw(chart) {
+    const active = chart.tooltip.getActiveElements()[0];
+    if (!active) return;
+    const { ctx, chartArea } = chart;
+    ctx.save();
+    ctx.strokeStyle = cssVar("--mute");
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(active.element.x, chartArea.top);
+    ctx.lineTo(active.element.x, chartArea.bottom);
+    ctx.stroke();
+    ctx.restore();
+  },
+};
+
+function renderChart(company) {
+  const { forecast } = company;
+  chartStart = chartMonths ? Math.max(0, company.revenue.length - chartMonths) : 0;
+  const revenue = company.revenue.slice(chartStart), expenses = company.expenses.slice(chartStart);
+  const lastRevenue = revenue[revenue.length - 1];
+  const ink = cssVar("--ink"), muted = cssVar("--mute"), accent = cssVar("--accent"), rule = cssVar("--rule");
+  const bad = cssVar("--neg"), good = cssVar("--pos");
+  // Unusual months get a large dot on the line that caused them: red for a bad month, green for a good one.
+  const perPoint = (cause, normal, unusual) => revenue.map((_, i) => {
+    const flag = company.flags.find(f => f.index === i + chartStart && f.cause === cause);
+    return flag ? unusual(flag) : normal;
+  });
+  const flagColour = flag => flag.z < 0 ? bad : good;
+  // Forecast lines start at the last real month, so pad the earlier months with nulls.
+  const afterHistory = values => Array(revenue.length - 1).fill(null).concat([lastRevenue, ...values]);
+  const font = { family: "IBM Plex Mono", size: 11 };
+
+  if (chart) chart.destroy();
+  chart = new Chart($("chart"), {
+    type: "line",
+    plugins: [hoverLine],
+    data: {
+      labels: company.months.slice(chartStart).concat(forecast.months),
+      datasets: [
+        { label: "Revenue", data: revenue, borderColor: ink, backgroundColor: ink, borderWidth: 2, tension: .3,
+          pointRadius: perPoint("revenue", 0, () => 7), pointBackgroundColor: perPoint("revenue", ink, flagColour), pointHoverRadius: 5 },
+        { label: "Expenses", data: expenses, borderColor: muted, backgroundColor: muted, borderWidth: 1.5, tension: .3,
+          pointRadius: perPoint("expenses", 0, () => 7), pointBackgroundColor: perPoint("expenses", muted, flagColour), pointHoverRadius: 5 },
+        { label: "Revenue forecast", data: afterHistory(forecast.revenue), borderColor: accent, backgroundColor: accent, borderWidth: 2, borderDash: [6, 5], pointRadius: 3 },
+        { label: "80% range", data: afterHistory(forecast.revenue.map(x => x + forecast.band)), borderWidth: 0, pointRadius: 0, fill: "+1", backgroundColor: accent + "2E" },
+        { label: "low", data: afterHistory(forecast.revenue.map(x => x - forecast.band)), borderWidth: 0, pointRadius: 0 },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      animation: false,  // the left-to-right reveal is a CSS wipe on the canvas instead
+      datasets: { line: { cubicInterpolationMode: "monotone" } },  // smooth, but never curves past a real value
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { align: "start", labels: { color: muted, font, boxWidth: 18, boxHeight: 2, filter: item => item.text !== "low" } },
+        tooltip: {
+          backgroundColor: ink, titleColor: cssVar("--paper"), bodyColor: cssVar("--paper"), footerColor: cssVar("--paper"),
+          cornerRadius: 0, padding: 10, titleFont: font, bodyFont: font,
+          filter: item => item.dataset.label !== "low",
+          callbacks: {
+            label: item => item.dataset.label === "80% range"
+              ? `Likely range: ${money(item.parsed.y - 2 * forecast.band)} to ${money(item.parsed.y)}`
+              : `${item.dataset.label}: ${money(item.parsed.y)}`,
+            afterBody: items => company.flags.some(f => f.index === items[0].dataIndex + chartStart) ? "Unusual month" : "",
+          },
+        },
+      },
+      scales: {
+        x: { ticks: { color: muted, font, maxRotation: 0, autoSkipPadding: 14 }, grid: { display: false }, border: { color: ink } },
+        y: { ticks: { color: muted, font, callback: value => value.toLocaleString("en-IN") }, grid: { color: rule }, border: { display: false } },
+      },
+    },
+  });
+
+  // Restart the wipe animation: removing the class, forcing a reflow, then adding it back.
+  const box = $("chartBox");
+  box.classList.remove("wipe");
+  void box.offsetWidth;
+  box.classList.add("wipe");
+
+  const test = company.backtest;
+  $("backtest").textContent = "Figures in ₹ crore. Large dots mark unusual months. " + (test
+    ? `Accuracy check (${forecast.model.toLowerCase()} model): when the last ${test.folds * 3} months were hidden and forecast 3 at a time, the average error was ${test.mape}%, against ${test.naive_mape}% for a “same as last month” guess.`
+    : "Not enough history to check forecast accuracy. Upload 12 or more months.");
+}
+
+function renderFlags(company) {
+  const usualMargin = (sum(company.margin) / company.margin.length).toFixed(1);
+  $("flags").innerHTML = company.flags.length
+    ? company.flags.map((flag, i) =>
+        `<li data-flag="${i}" tabindex="0"><b class="${flag.z < 0 ? "neg" : "pos"}">${escapeHtml(flag.month)}</b>` +
+        `Margin ${flag.margin.toFixed(1)}% against a usual ${usualMargin}%. ` +
+        `${flag.cause === "expenses" ? "Expenses" : "Revenue"} ran ${signed(flag.deviation)}% versus trend.` +
+        (flag.success === null ? "" : ` <span class="mute">Project success ${flag.success.toFixed(1)}%.</span>`) + `</li>`).join("")
+    : `<li class="mute">No unusual months. Margins stayed close to their normal range.</li>`;
+}
+
+// Hovering a flagged month points to it on the chart.
+function pointChartAt(flag) {
+  const index = flag ? flag.index - chartStart : -1;
+  const points = index >= 0 ? [{ datasetIndex: flag.cause === "revenue" ? 0 : 1, index }] : [];
+  chart.setActiveElements(points);
+  chart.tooltip.setActiveElements(points, { x: 0, y: 0 });
+  chart.update();
+}
+
+function renderHealthParts(company) {
+  $("healthParts").innerHTML = company.health.parts.map(part =>
+    `<div class="hp"><span>${part.name}</span><div class="bar"><i data-width="${part.value}"></i></div>` +
+    `<span>${part.value} × ${Math.round(part.weight * 100)}%</span></div>`).join("");
+  // Set the widths one frame later so the bars grow from zero.
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    document.querySelectorAll("#healthParts i").forEach((bar, i) => {
+      bar.style.transitionDelay = i * 80 + "ms";
+      bar.style.width = bar.dataset.width + "%";
+    })));
+}
+
+function renderSimulator() {
+  const company = companies[current];
+  if (!company) return;
+  const cut = +$("cutSlider").value, extraGrowth = +$("growthSlider").value;
+  $("cutValue").textContent = cut + "%";
+  $("growthValue").textContent = signed(extraGrowth, 1).replace(".0", "") + " pts";
+  let baseRevenue = 0, baseProfit = 0, newRevenue = 0, newProfit = 0;
+  company.forecast.revenue.forEach((revenue, i) => {
+    const expenses = company.forecast.expenses[i];
+    const scenarioRevenue = revenue * (1 + extraGrowth / 100 * (i + 1));  // extra growth builds up month by month
+    const scenarioExpenses = expenses * (1 - cut / 100);
+    baseRevenue += revenue; baseProfit += revenue - expenses;
+    newRevenue += scenarioRevenue; newProfit += scenarioRevenue - scenarioExpenses;
+  });
+  const gain = newProfit - baseProfit;
+  $("simBaseProfit").textContent = money(baseProfit);
+  $("simBaseMargin").textContent = (baseProfit / baseRevenue * 100).toFixed(1) + "%";
+  $("simNewMargin").textContent = (newProfit / newRevenue * 100).toFixed(1) + "%";
+  countTo($("simNewProfit"), "simProfit", newProfit, money);
+  $("simGain").className = gain >= 0 ? "pos" : "neg";
+  $("simGain").textContent = gain === 0 ? "Move a slider to test a scenario." : `${gain > 0 ? "+" : "−"}${money(Math.abs(gain))} profit over the quarter`;
+  if (gain === 0) $("simGain").className = "mute";
+}
+
+// Each quick answer is a sentence filled in from the analysis. No language model is involved.
+const answers = {
+  summary(company) {
+    const last = company.revenue.length - 1;
+    return `${current} reported ${money(company.revenue[last])} revenue and ${money(company.expenses[last])} expenses in ${company.latest_month}, a ${company.margin[last].toFixed(1)}% margin. Business health score: ${company.health.score}/100 (${company.health.label.toLowerCase()}).`;
+  },
+  trend(company) {
+    return `${current} revenue is ${company.growth >= 0 ? "growing" : "declining"} about ${Math.abs(company.growth).toFixed(1)}% a month, while expenses move ${signed(company.expense_growth)}% a month.`;
+  },
+  forecast(company) {
+    const total = sum(company.forecast.revenue), range = company.forecast.band * 3;
+    return `Revenue is projected near ${money(total)} over the next 3 months, most likely between ${money(total - range)} and ${money(total + range)}. This extends past trend and is not a guarantee.`;
+  },
+  risks(company) {
+    if (!company.flags.length) return `No unusual months. The main thing to watch is expenses moving ${signed(company.expense_growth)}% a month against revenue at ${signed(company.growth)}%.`;
+    return "Watch these months: " + company.flags.map(flag => `${flag.month} (margin ${flag.margin.toFixed(1)}%)`).join("; ") + ".";
+  },
+  actions(company) {
+    return company.actions.join(" ");
+  },
+};
+
+function renderAnswer() {
+  $("answer").textContent = answers[topic](companies[current]);
+  document.querySelectorAll(".chip").forEach(chip => chip.setAttribute("aria-pressed", chip.dataset.topic === topic));
+  if (!reducedMotion) $("answer").animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 400, easing: "ease-out" });
+}
+
+function renderLeague() {
+  const ranked = Object.keys(companies).sort((a, b) => companies[b].health.score - companies[a].health.score);
+  $("league").innerHTML =
+    `<thead><tr><th></th><th>Company</th><th class="hide">Revenue, 12 months</th><th>Growth</th><th>Margin</th><th class="hide">Forecast error</th><th>Health</th></tr></thead><tbody>` +
+    ranked.map((name, i) => {
+      const company = companies[name], score = company.health.score;
+      return `<tr><td class="rk">${i + 1}</td><td><button data-name="${escapeHtml(name)}">${escapeHtml(name)}</button></td>` +
+        `<td>${sparkline(company.revenue)}</td>` +
+        `<td class="fig ${company.growth >= 0 ? "pos" : "neg"}">${signed(company.growth)}%/mo</td>` +
+        `<td class="fig">${company.margin[company.margin.length - 1].toFixed(1)}%</td>` +
+        `<td class="fig hide">${company.backtest ? company.backtest.mape + "%" : "n/a"}</td>` +
+        `<td class="fig ${healthClass(score)}">${score}</td></tr>`;
+    }).join("") + "</tbody>";
+}
+
+// ---------- Data loading ----------
+// Fetch an analysis, dimming the page while it loads. `sourceName` is the uploaded file name, or "" for sample data.
+function loadData(request, sourceName) {
+  $("main").setAttribute("aria-busy", "true");
+  $("msg").textContent = "";
+  $("source").textContent = sourceName ? `Analysing ${sourceName}…` : "";
+  return request
+    .then(response => response.json().then(body => response.ok ? body : Promise.reject(body)))
+    .then(data => {
+      show(data);
+      $("source").textContent = sourceName ? `Showing ${sourceName}` : "";
+      $("useSample").hidden = !sourceName;
+    })
+    .catch(problem => {
+      $("source").textContent = "";
+      $("msg").textContent = problem.error || "Could not reach the server. Start it with: python app.py";
+      if (!current) $("headline").textContent = "No data loaded";
+    })
+    .finally(() => {
+      $("main").setAttribute("aria-busy", "false");
+      $("fileInput").value = "";  // so choosing the same file again still triggers a change
+    });
+}
+
+function upload(file) {
+  const form = new FormData();
+  form.append("file", file);
+  loadData(fetch("api/analyze", { method: "POST", body: form }), file.name);
+}
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  $("themeToggle").textContent = theme === "dark" ? "Light mode" : "Dark mode";
+  if (chart) renderChart(companies[current]);  // chart colours are read from the theme
+}
+
+// ---------- Events ----------
+// Any element with data-name (index, ticker, league table) switches company.
+document.addEventListener("click", event => {
+  const target = event.target.closest("[data-name]");
+  if (!target) return;
+  if (target.closest("#league")) scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+  select(target.dataset.name);
+});
+$("chips").onclick = event => {
+  const chip = event.target.closest(".chip");
+  if (chip) { topic = chip.dataset.topic; renderAnswer(); }
+};
+const flagUnder = event => {
+  const item = event.target.closest("[data-flag]");
+  return item ? companies[current].flags[item.dataset.flag] : null;
+};
+$("flags").onmouseover = $("flags").onfocusin = event => pointChartAt(flagUnder(event));
+$("flags").onmouseleave = $("flags").onfocusout = () => pointChartAt(null);
+
+$("fileInput").onchange = event => { if (event.target.files[0]) upload(event.target.files[0]); };
+$("useSample").onclick = () => loadData(fetch("api/sample"), "");
+$("cutSlider").oninput = $("growthSlider").oninput = renderSimulator;
+$("simReset").onclick = () => { $("cutSlider").value = 0; $("growthSlider").value = 0; renderSimulator(); };
+$("range").onclick = event => {
+  const button = event.target.closest("button");
+  if (!button) return;
+  chartMonths = +button.dataset.months;
+  document.querySelectorAll("#range button").forEach(b => b.setAttribute("aria-pressed", b === button));
+  renderChart(companies[current]);
+};
+
+// Drag a file onto the upload box.
+const dropZone = $("dropZone");
+dropZone.ondragover = event => { event.preventDefault(); dropZone.classList.add("drag"); };
+dropZone.ondragleave = () => dropZone.classList.remove("drag");
+dropZone.ondrop = event => {
+  event.preventDefault();
+  dropZone.classList.remove("drag");
+  if (event.dataTransfer.files[0]) upload(event.dataTransfer.files[0]);
+};
+
+// Theme: follow the system until the user picks one, then remember the choice.
+const systemDark = matchMedia("(prefers-color-scheme: dark)");
+let savedTheme = null;
+try { savedTheme = localStorage.getItem("theme"); } catch {}
+setTheme(savedTheme || (systemDark.matches ? "dark" : "light"));
+systemDark.addEventListener("change", () => { if (!savedTheme) setTheme(systemDark.matches ? "dark" : "light"); });
+$("themeToggle").onclick = () => {
+  savedTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  try { localStorage.setItem("theme", savedTheme); } catch {}
+  setTheme(savedTheme);
+};
+
+// Reports always print in the light theme, then the screen theme comes back.
+let themeBeforePrint;
+addEventListener("beforeprint", () => { themeBeforePrint = document.documentElement.dataset.theme; setTheme("light"); });
+addEventListener("afterprint", () => setTheme(themeBeforePrint));
+$("printReport").onclick = () => print();
+
+loadData(fetch("api/sample"), "");
+</script></body></html>
