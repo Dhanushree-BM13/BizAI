@@ -1,8 +1,4 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="BizAI logo" width="260">
-</p>
-
-<p align="center">
   <img src="assets/banner.svg" alt="BizAI — Smart business analytics for every company, every month" width="100%">
 </p>
 
@@ -13,6 +9,10 @@
   <img src="https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth-17130E?style=flat-square&logo=supabase&logoColor=F3EEE3" alt="Supabase">
   <img src="https://img.shields.io/badge/Vercel-ready-17130E?style=flat-square&logo=vercel&logoColor=F3EEE3" alt="Vercel ready">
   <img src="https://img.shields.io/badge/tests-12%20passing-C2380F?style=flat-square" alt="12 tests passing">
+</p>
+
+<p align="center">
+  <a href="https://biz-ai-jr.vercel.app"><img src="https://img.shields.io/badge/Live%20demo-biz--ai--jr.vercel.app-C2380F?style=for-the-badge&logo=vercel&logoColor=F3EEE3" alt="Live demo: biz-ai-jr.vercel.app"></a>
 </p>
 
 <p align="center">
@@ -28,7 +28,7 @@
 ---
 
 **BizAI** turns monthly revenue and expense data into a clear, honest picture of each company's financial health.
-It scores every company, forecasts the next quarter and *proves* how accurate that forecast is, flags the months
+It scores every company, forecasts the next quarter and *measures* how accurate that forecast is, flags the months
 that broke the pattern, and explains what management could do about it. Data streams live from a Supabase
 database behind a secure sign-in.
 
@@ -114,11 +114,13 @@ sequenceDiagram
     API->>DB: Read company_financials as this user
     DB-->>API: 2,400 rows
     API-->>Page: Scores, forecasts, flags, advice
-    DB--)Page: Realtime: a row changed
+    DB--)Page: Realtime update when a row changes
     Page->>API: Reload the analysis
 ```
 
 ## Getting started
+
+Requires **Python 3.12 or later**. Set up the [database](#database) first, then:
 
 ```bash
 git clone https://github.com/Dhanushree-BM13/BizAI.git
@@ -127,7 +129,8 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open **<http://127.0.0.1:5000>**, create an account on the login page and sign in. The bar at the top of the
+Open **<http://localhost:5000>**, create an account on the login page, confirm it from the email Supabase sends,
+and sign in. The bar at the top of the
 dashboard shows a pulsing **Live** dot when it is reading from Supabase.
 
 | Variable | Purpose | Default |
@@ -191,8 +194,8 @@ Accounts are handled entirely by **Supabase Auth**; the app never sees a passwor
 
 In **Authentication → URL Configuration**:
 
-- **Site URL:** the deployed address, for example `https://bizai.vercel.app`
-- **Redirect URLs:** add `http://localhost:5000/login.html` and `https://<your-domain>/login.html`
+- **Site URL:** `https://biz-ai-jr.vercel.app` (or your own deployed address)
+- **Redirect URLs:** add `http://localhost:5000/login.html` and `https://biz-ai-jr.vercel.app/login.html`
 
 These make the confirmation and password-reset emails link back to the app. Email confirmation is on by default;
 new users confirm their address before their first sign-in.
@@ -212,8 +215,8 @@ new users confirm their address before their first sign-in.
    from its CDN.
 3. Add the deployed address to the Supabase Auth settings above.
 
-Every push to `main` redeploys. `vercel.json` allows 60 seconds per request, which covers the first request after
-a cold start. Uploads are limited to 4 MB, below Vercel's 4.5 MB request limit.
+Every push to `main` redeploys. `vercel.json` allows up to 60 seconds per request, leaving room for the first
+request after a cold start, when all 40 companies are analysed. Uploads are limited to 4 MB, below Vercel's 4.5 MB request limit.
 
 ## Methodology
 
@@ -298,12 +301,13 @@ BizAI/
 ├── supabase/
 │   ├── schema.sql       Tables, view, security and realtime
 │   └── seed.sql         Demo data (generated)
-├── generate_data.py     Builds financial_data.csv and supabase/seed.sql
+├── generate_data.py     Builds financial_data.csv, sample_upload.csv and supabase/seed.sql
 ├── financial_data.csv   Demo data for local testing
 ├── sample_upload.csv    8 new companies for trying the upload
 ├── test_analytics.py    Automated tests
 ├── assets/              README graphics and logo
 ├── requirements.txt     Pinned dependencies
+├── .python-version      Python version for Vercel
 └── vercel.json          Vercel function settings
 ```
 
@@ -318,8 +322,19 @@ BizAI/
 | `GET` | `/api/sample.csv` | | Download a sample file of 8 companies not in the database, for trying the upload |
 | `GET` | `/api/config` | | Supabase details the pages need for sign-in and live updates |
 
-Uploads need **Company**, **Date**, **Revenue** and **Expenses** columns; **Industry** and **Project_Success** are
-optional. Each company needs at least six months of data.
+Uploads need a company, a date, revenue and expenses column; sector and project success are optional. Column
+names are matched by how they start, so these all work:
+
+| Field | Accepted column names |
+|---|---|
+| Company *(required)* | `Company…`, `Name…` |
+| Date *(required)* | `Date…`, `Month…`, `Period…` |
+| Revenue *(required)* | `Revenue…`, `Sales…`, `Income…` |
+| Expenses *(required)* | `Expenses…`, `Expense…`, `Cost…` |
+| Industry | `Industry…`, `Sector…` |
+| Project success | `Project_Success…`, `Success…` |
+
+Each company needs at least six months of data. `sample_upload.csv` shows the alternative names in use.
 
 </details>
 
@@ -338,7 +353,12 @@ repeatable demo data, the seed script, the upload sample, every API endpoint, up
   suits the model; real company data will be less predictable.
 - Forecasts are statistical projections, **not financial advice**.
 - Uploaded files are analysed in memory and not stored.
+- The first request after the app has been idle is slower, while all 40 companies are analysed; later requests
+  reuse the result until the data changes.
 
 ---
 
-<p align="center"><sub>Built by <b>Dhanushree B.M</b> · Flask · scikit-learn · Supabase · Vercel</sub></p>
+<p align="center">
+  <img src="assets/logo.svg" alt="BizAI" width="180"><br>
+  <sub>Built by <b>Dhanushree B.M</b> · Flask · scikit-learn · Supabase · Vercel</sub>
+</p>
