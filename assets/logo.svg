@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="120" viewBox="0 0 420 120" role="img" aria-label="BizAI">
+  <style>
+    .tile{fill:#17130E}.line{stroke:#F3EEE3}.word{fill:#17130E}.dot{fill:#C2380F}
+    @media (prefers-color-scheme:dark){.tile{fill:#EFE7D8}.line{stroke:#12100D}.word{fill:#EFE7D8}.dot{fill:#FF6B3D}}
+    .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s .2s cubic-bezier(.6,0,.2,1) forwards}
+    .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s 1.4s cubic-bezier(.2,.8,.2,1.4) both}
+    .rise{animation:rise .9s .3s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes draw{to{stroke-dashoffset:0}}
+    @keyframes pop{from{transform:scale(0)}}
+    @keyframes rise{from{opacity:0;transform:translateX(-12px)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}.draw{stroke-dashoffset:0}}
+  </style>
+  <g transform="translate(10,12) scale(1.5)">
+    <rect class="tile" width="64" height="64" rx="14"/>
+    <polyline class="line draw" pathLength="1" points="11,45 21,37 29,41 36,24 43,33 52,17" fill="none" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle class="dot pop" cx="52" cy="17" r="6"/>
+  </g>
+  <text class="word rise" x="128" y="84" font-family="Georgia,'Times New Roman',serif" font-size="68" font-style="italic" font-weight="700" letter-spacing="-2">BizAI<tspan class="dot">.</tspan></text>
+</svg>

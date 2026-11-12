@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BizAI – Smart Business Analytics</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -129,10 +130,11 @@ main{padding:28px 16px 48px}.hero,.two{grid-template-columns:1fr;gap:0}.hero .sc
 #league .spark,#league .hide{display:none}}
 @media print{.bar,.tools,.seg,.sl,.chips,.ask,.up,#simReset{display:none!important}.view{display:block!important;margin-top:48px}main{padding:0;max-width:none}
 .reveal{opacity:1!important;transform:none!important}section,.kpis{break-inside:avoid}body{background:#fff}}
+.brand{display:flex;align-items:center;gap:10px}.brand .word{color:inherit}.logo{width:1em;height:1em;flex:none}
 </style></head><body>
 
 <header class="mast">
-  <div class="brand">BizAI<span>.</span></div>
+  <div class="brand"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="var(--ink)"/><polyline points="11,45 21,37 29,41 36,24 43,33 52,17" fill="none" stroke="var(--paper)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="17" r="6" fill="var(--accent)"/></svg><span class="word">BizAI<span>.</span></span></div>
   <p class="edition"><span id="edition">Monthly business review</span><span class="live" id="live" role="status" hidden></span></p>
   <div class="tools"><button class="btn" id="themeToggle"></button><button class="btn" id="printReport">Print report</button><button class="btn" id="signOut" hidden>Sign out</button></div>
 </header>

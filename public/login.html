@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sign in – BizAI</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -63,11 +64,12 @@ h2{font:500 32px/1.1 var(--serif);letter-spacing:-.02em;margin:0 0 6px}
 @media (max-width:860px){.page{grid-template-columns:1fr}.story{padding:28px 20px;border-right:0;border-bottom:1px solid var(--rule)}
 .story h1{margin-top:28px}.chart,.facts{display:none}.panel{padding:28px 20px 48px}.top{position:absolute;top:24px;right:20px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.chart .draw{stroke-dashoffset:0}.chart .late{opacity:1}}
+.brand{display:flex;align-items:center;gap:10px}.brand .word{color:inherit}.logo{width:1em;height:1em;flex:none}
 </style></head><body>
 <div class="page">
 
   <section class="story" aria-label="About BizAI">
-    <div class="brand">BizAI<span>.</span></div>
+    <div class="brand"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="var(--ink)"/><polyline points="11,45 21,37 29,41 36,24 43,33 52,17" fill="none" stroke="var(--paper)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="17" r="6" fill="var(--accent)"/></svg><span class="word">BizAI<span>.</span></span></div>
     <h1 id="headline">Know how every company is <em>really</em> doing.</h1>
     <p class="lede">Health scores, tested forecasts and early warnings for 40 companies, updated live from the database.</p>
     <svg class="chart" viewBox="0 0 560 170" aria-hidden="true">

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="BizAI">
+  <!-- BizAI mark: a rising line with one dip (the unusual month BizAI flags), ending in the forecast dot -->
+  <rect width="64" height="64" rx="14" fill="#17130E"/>
+  <polyline points="11,45 21,37 29,41 36,24 43,33 52,17" fill="none" stroke="#F3EEE3" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="52" cy="17" r="6" fill="#C2380F"/>
+</svg>

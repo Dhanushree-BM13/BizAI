@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="assets/logo.svg" alt="BizAI logo" width="260">
+</p>
+
+<p align="center">
   <img src="assets/banner.svg" alt="BizAI — Smart business analytics for every company, every month" width="100%">
 </p>
 
@@ -289,7 +293,8 @@ BizAI/
 ├── analytics.py         Cleaning, forecasting, back-testing, anomaly detection, scoring
 ├── public/
 │   ├── index.html       Dashboard and Ask BizAI
-│   └── login.html       Sign in, sign up and password reset
+│   ├── login.html       Sign in, sign up and password reset
+│   └── logo.svg         Logo and browser icon
 ├── supabase/
 │   ├── schema.sql       Tables, view, security and realtime
 │   └── seed.sql         Demo data (generated)
@@ -297,7 +302,7 @@ BizAI/
 ├── financial_data.csv   Demo data for local testing
 ├── sample_upload.csv    8 new companies for trying the upload
 ├── test_analytics.py    Automated tests
-├── assets/              README graphics
+├── assets/              README graphics and logo
 ├── requirements.txt     Pinned dependencies
 └── vercel.json          Vercel function settings
 ```
