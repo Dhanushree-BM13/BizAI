@@ -56,21 +56,25 @@ join public.companies c on c.id = f.company_id;
 comment on view public.company_financials is 'Flat view of every company month, read by the BizAI dashboard.';
 
 -- ---------------------------------------------------------------------
--- 4. Security: anyone may read, nobody may write through the public API.
--- Add or change data in the Supabase Table Editor or SQL Editor.
+-- 4. Security: only signed-in users may read; nobody may write through the API.
+-- Accounts come from Supabase Auth (the app's login page). Add or change data
+-- in the Supabase Table Editor or SQL Editor.
 -- ---------------------------------------------------------------------
 alter table public.companies          enable row level security;
 alter table public.monthly_financials enable row level security;
 
 drop policy if exists "Anyone can read companies" on public.companies;
-create policy "Anyone can read companies"
-  on public.companies for select to anon, authenticated using (true);
+drop policy if exists "Signed-in users can read companies" on public.companies;
+create policy "Signed-in users can read companies"
+  on public.companies for select to authenticated using (true);
 
 drop policy if exists "Anyone can read monthly financials" on public.monthly_financials;
-create policy "Anyone can read monthly financials"
-  on public.monthly_financials for select to anon, authenticated using (true);
+drop policy if exists "Signed-in users can read monthly financials" on public.monthly_financials;
+create policy "Signed-in users can read monthly financials"
+  on public.monthly_financials for select to authenticated using (true);
 
-grant select on public.company_financials to anon, authenticated;
+revoke select on public.company_financials from anon;
+grant select on public.company_financials to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 5. Realtime: tell the dashboard when figures change

@@ -134,7 +134,7 @@ main{padding:28px 16px 48px}.hero,.two{grid-template-columns:1fr;gap:0}.hero .sc
 <header class="mast">
   <div class="brand">BizAI<span>.</span></div>
   <p class="edition"><span id="edition">Monthly business review</span><span class="live" id="live" role="status" hidden></span></p>
-  <div class="tools"><button class="btn" id="themeToggle"></button><button class="btn" id="printReport">Print report</button></div>
+  <div class="tools"><button class="btn" id="themeToggle"></button><button class="btn" id="printReport">Print report</button><button class="btn" id="signOut" hidden>Sign out</button></div>
 </header>
 
 <nav class="bar" aria-label="Company and section"><div>
@@ -241,6 +241,7 @@ main{padding:28px 16px 48px}.hero,.two{grid-template-columns:1fr;gap:0}.hero .sc
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 // All analysis happens on the server (analytics.py). This script only draws and animates the result.
 
@@ -749,6 +750,22 @@ function renderLeague() {
     }).join("") + "</tbody>";
 }
 
+// ---------- Sign-in ----------
+let client = null, liveTable = "";  // Supabase client; null when the server has sign-in switched off
+
+// fetch() that sends the signed-in user's token, and returns to the login page if it is refused.
+async function authFetch(url, options = {}) {
+  const headers = new Headers(options.headers);
+  if (client) {
+    const { data } = await client.auth.getSession();
+    if (!data.session) return location.replace("login.html"), new Promise(() => {});
+    headers.set("Authorization", "Bearer " + data.session.access_token);
+  }
+  const response = await fetch(url, { ...options, headers });
+  if (response.status === 401) return location.replace("login.html"), new Promise(() => {});
+  return response;
+}
+
 // ---------- Data loading ----------
 // Fetch an analysis, dimming the page while it loads. `sourceName` is the uploaded file name, or "" for sample data.
 function loadData(request, sourceName) {
@@ -781,7 +798,7 @@ function loadData(request, sourceName) {
 function upload(file) {
   const form = new FormData();
   form.append("file", file);
-  loadData(fetch("api/analyze", { method: "POST", body: form }), file.name).then(() => { if (!$("msg").textContent) openTab("overview"); });
+  loadData(authFetch("api/analyze", { method: "POST", body: form }), file.name).then(() => { if (!$("msg").textContent) openTab("overview"); });
 }
 
 function setTheme(theme) {
@@ -828,7 +845,7 @@ const showFlagOnChart = event => {
 $("flags").onclick = $("flags").onkeydown = showFlagOnChart;
 
 $("fileInput").onchange = event => { if (event.target.files[0]) upload(event.target.files[0]); };
-$("useSample").onclick = () => loadData(fetch("api/sample"), "").then(() => openTab("overview"));
+$("useSample").onclick = () => loadData(authFetch("api/sample"), "").then(() => openTab("overview"));
 $("cutSlider").oninput = $("growthSlider").oninput = renderSimulator;
 $("simReset").onclick = () => { $("cutSlider").value = 0; $("growthSlider").value = 0; renderSimulator(); };
 $("range").onclick = event => {
@@ -880,23 +897,15 @@ function renderLiveBadge() {
 }
 
 // Listen for row changes in the Supabase table and redraw when they happen.
-async function connectLive() {
-  const config = await fetch("api/config").then(response => response.json());
-  if (!config.url) return;
-  await new Promise((resolve, reject) => {  // load the Supabase client only when it is needed
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.append(script);
-  });
+function connectLive() {
+  if (!client) return;
   let timer;
-  supabase.createClient(config.url, config.key).channel("financials-changes")
-    .on("postgres_changes", { event: "*", schema: "public", table: config.table }, () => {
+  client.channel("financials-changes")
+    .on("postgres_changes", { event: "*", schema: "public", table: liveTable }, () => {
       clearTimeout(timer);  // many rows can change at once, so wait for them to settle and reload once
       timer = setTimeout(() => {
         if (uploadedFile) return;
-        fetch("api/sample").then(response => {
+        authFetch("api/sample").then(response => {
           dataSource = response.headers.get("X-Data-Source");
           return response.json();
         }).then(data => {
@@ -908,7 +917,22 @@ async function connectLive() {
     })
     .subscribe(status => { liveConnected = status === "SUBSCRIBED"; renderLiveBadge(); });
 }
-connectLive().catch(() => {});  // the dashboard works without live updates
-
-loadData(fetch("api/sample"), "");
+// Sign in first (when the server uses Supabase), then load the data and listen for changes.
+async function start() {
+  let config = {};
+  try { config = await fetch("api/config").then(response => response.json()); } catch {}
+  if (config.url) {
+    client = supabase.createClient(config.url, config.key);
+    liveTable = config.table;
+    const { data } = await client.auth.getSession();
+    if (!data.session) return location.replace("login.html");
+    $("signOut").hidden = false;
+    $("signOut").title = "Signed in as " + data.session.user.email;
+    client.auth.onAuthStateChange(event => { if (event === "SIGNED_OUT") location.replace("login.html"); });
+  }
+  loadData(authFetch("api/sample"), "");
+  try { connectLive(); } catch {}  // the dashboard works without live updates
+}
+$("signOut").onclick = () => client.auth.signOut();
+start();
 </script></body></html>

@@ -86,6 +86,17 @@ def test_server_endpoints():
     assert good.status_code == 200 and len(good.get_json()) == len(COMPANIES)
 
 
+def test_data_needs_sign_in_when_supabase_is_on():
+    app.config["USE_SUPABASE"] = True
+    try:
+        client = app.test_client()
+        assert client.get("/api/sample").status_code == 401  # no token: refused before any network call
+        assert client.post("/api/analyze").status_code == 401
+        assert client.get("/login.html").status_code == 200
+    finally:
+        app.config["USE_SUPABASE"] = False
+
+
 if __name__ == "__main__":
     tests = [f for name, f in sorted(globals().items()) if name.startswith("test_")]
     for test in tests:

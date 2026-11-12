@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign in – BizAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F3EEE3;--wash:#E9E2D3;--ink:#17130E;--mute:#6A6155;--rule:rgba(23,19,14,.17);--accent:#C2380F;--pos:#1F6B45;--neg:#B3261E;
+--serif:"Fraunces",Georgia,serif;--sans:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;--ease:cubic-bezier(.2,.8,.2,1)}
+:root[data-theme=dark]{--paper:#12100D;--wash:#1D1A15;--ink:#EFE7D8;--mute:#9D9385;--rule:rgba(239,231,216,.17);--accent:#FF6B3D;--pos:#6FCB95;--neg:#FF8170;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.55 var(--sans)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.label{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+
+.page{display:grid;grid-template-columns:1.1fr 1fr;min-height:100%}
+
+/* ---------- Left: the story ---------- */
+.story{position:relative;overflow:hidden;background:var(--wash);border-right:1px solid var(--rule);padding:44px 56px;display:flex;flex-direction:column}
+.brand{font:italic 800 34px/1 var(--serif);letter-spacing:-.02em}.brand span{color:var(--accent)}
+.story h1{font:500 clamp(2.2rem,4vw,3.6rem)/1.05 var(--serif);letter-spacing:-.025em;margin:auto 0 18px;max-width:14ch}
+.story h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.12em;margin-bottom:-.12em}
+.w>span{display:inline-block;animation:rise .9s var(--ease) both}
+@keyframes rise{from{transform:translateY(110%)}}
+.lede{color:var(--mute);max-width:44ch;margin:0 0 28px;animation:fade 1s .7s both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+.chart{width:100%;max-width:560px;height:auto;display:block;margin-bottom:28px}
+.chart .draw{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.4s .3s cubic-bezier(.6,0,.2,1) forwards}
+.chart .late{opacity:0;animation:show .8s 2.5s forwards}
+.chart .ring{transform-box:fill-box;transform-origin:center;animation:ring 1.8s 1.6s ease-out infinite;opacity:0}
+@keyframes draw{to{stroke-dashoffset:0}}@keyframes show{to{opacity:1}}
+@keyframes ring{from{transform:scale(.6);opacity:.9}to{transform:scale(2.6);opacity:0}}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink);margin:0;padding:0;list-style:none}
+.facts li{padding:14px 14px 0 0;animation:fade .8s both}.facts li:nth-child(2){animation-delay:.15s}.facts li:nth-child(3){animation-delay:.3s}
+.facts b{display:block;font:500 28px/1.1 var(--serif);margin-top:8px}
+
+/* ---------- Right: the form ---------- */
+.panel{display:flex;flex-direction:column;justify-content:center;padding:44px clamp(24px,6vw,88px)}
+.top{display:flex;justify-content:flex-end;margin-bottom:auto}
+.btn{all:unset;cursor:pointer;font:500 12px/1 var(--mono);letter-spacing:.04em;padding:8px 12px;border:1px solid var(--ink);transition:background .2s,color .2s}
+.btn:hover{background:var(--ink);color:var(--paper)}.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+form{width:100%;max-width:400px;margin:auto 0;animation:fade .8s .2s both}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin-bottom:30px}
+.tabs button{all:unset;cursor:pointer;font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding:12px 2px 13px;margin-right:18px;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--accent)}.tabs button:focus-visible{outline:2px solid var(--accent)}
+h2{font:500 32px/1.1 var(--serif);letter-spacing:-.02em;margin:0 0 6px}
+.sub{color:var(--mute);margin:0 0 26px}
+.field{display:block;margin-bottom:18px}
+.field span{display:flex;justify-content:space-between;margin-bottom:8px}
+.field input{width:100%;font:400 16px var(--sans);color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--ink);border-radius:0;padding:10px 2px;transition:border-color .2s}
+.field input:focus{outline:none;border-color:var(--accent);box-shadow:0 1px 0 var(--accent)}
+.pw{position:relative}.pw input{padding-right:56px}
+.peek{all:unset;cursor:pointer;position:absolute;right:0;bottom:10px;font:500 11px var(--mono);letter-spacing:.08em;color:var(--mute)}.peek:hover{color:var(--ink)}
+.link{all:unset;cursor:pointer;font:400 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--accent);border-bottom:1px solid transparent}.link:hover{border-color:var(--accent)}
+.submit{all:unset;box-sizing:border-box;cursor:pointer;width:100%;text-align:center;margin-top:10px;padding:15px;background:var(--ink);color:var(--paper);font:600 15px var(--sans);transition:background .2s,transform .1s}
+.submit:hover{background:var(--accent)}.submit:active{transform:translateY(1px)}.submit:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.submit[disabled]{opacity:.6;cursor:progress}
+.note{min-height:1.6em;margin:16px 0 0;font-size:14px}.note.err{color:var(--neg)}.note.ok{color:var(--pos)}
+.fine{color:var(--mute);font-size:12px;margin-top:24px}
+
+@media (max-width:860px){.page{grid-template-columns:1fr}.story{padding:28px 20px;border-right:0;border-bottom:1px solid var(--rule)}
+.story h1{margin-top:28px}.chart,.facts{display:none}.panel{padding:28px 20px 48px}.top{position:absolute;top:24px;right:20px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.chart .draw{stroke-dashoffset:0}.chart .late{opacity:1}}
+</style></head><body>
+<div class="page">
+
+  <section class="story" aria-label="About BizAI">
+    <div class="brand">BizAI<span>.</span></div>
+    <h1 id="headline">Know how every company is <em>really</em> doing.</h1>
+    <p class="lede">Health scores, tested forecasts and early warnings for 40 companies, updated live from the database.</p>
+    <svg class="chart" viewBox="0 0 560 170" aria-hidden="true">
+      <g stroke="currentColor" opacity=".12"><line x1="0" y1="40" x2="560" y2="40"/><line x1="0" y1="90" x2="560" y2="90"/><line x1="0" y1="140" x2="560" y2="140"/></g>
+      <polyline class="draw" pathLength="1" stroke="var(--mute)" stroke-width="1.5" points="0,150 35,146 70,150 105,138 140,132 175,138 210,124 245,118 280,114 315,110 350,102 385,106 420,92 455,86"/>
+      <polyline class="draw" pathLength="1" stroke="var(--ink)" points="0,118 35,112 70,116 105,102 140,94 175,100 210,84 245,76 280,126 315,68 350,60 385,64 420,48 455,40"/>
+      <g class="late"><polygon fill="var(--accent)" opacity=".16" points="455,40 490,26 525,14 560,4 560,40 525,44 490,46 455,40"/></g>
+      <polyline class="late" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-dasharray="6 5" points="455,40 490,35 525,28 560,22"/>
+      <circle cx="280" cy="126" r="5" fill="var(--accent)" class="late" style="animation-delay:1.5s"/>
+      <circle cx="280" cy="126" r="5" fill="none" stroke="var(--accent)" stroke-width="2" class="ring"/>
+    </svg>
+    <ul class="facts">
+      <li><span class="label">Companies</span><b>40</b></li>
+      <li><span class="label">Forecast error</span><b>1.49%</b></li>
+      <li><span class="label">Updates</span><b>Live</b></li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <div class="top"><button class="btn" id="themeToggle" type="button"></button></div>
+
+    <form id="form" novalidate>
+      <div class="tabs" role="tablist" id="tabs">
+        <button type="button" role="tab" data-mode="signin" aria-selected="true">Sign in</button>
+        <button type="button" role="tab" data-mode="signup" aria-selected="false">Create account</button>
+      </div>
+
+      <h2 id="title">Welcome back</h2>
+      <p class="sub" id="subtitle">Sign in to open your dashboard.</p>
+
+      <label class="field" id="emailField"><span class="label">Email</span>
+        <input id="email" type="email" autocomplete="email" required></label>
+      <label class="field" id="passwordField"><span class="label">Password <button type="button" class="link" id="forgot">Forgot password?</button></span>
+        <div class="pw"><input id="password" type="password" autocomplete="current-password" minlength="6" required>
+        <button type="button" class="peek" id="peek" aria-label="Show password">SHOW</button></div></label>
+
+      <button class="submit" id="submit">Sign in</button>
+      <p class="note" id="note" role="status"></p>
+      <p class="fine">Accounts are handled by Supabase Auth. Passwords are never seen by this app.</p>
+    </form>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let client, mode = "signin";  // signin, signup or reset (choosing a new password from an emailed link)
+
+// Each mode changes the heading, the button and which fields show.
+const MODES = {
+  signin: { title: "Welcome back", subtitle: "Sign in to open your dashboard.", button: "Sign in", password: "current-password" },
+  signup: { title: "Create your account", subtitle: "Use your email and a password of at least 6 characters.", button: "Create account", password: "new-password" },
+  reset:  { title: "Choose a new password", subtitle: "Enter a new password of at least 6 characters.", button: "Save password", password: "new-password" },
+};
+
+function setMode(next) {
+  mode = next;
+  const m = MODES[mode];
+  $("title").textContent = m.title;
+  $("subtitle").textContent = m.subtitle;
+  $("submit").textContent = m.button;
+  $("password").autocomplete = m.password;
+  $("forgot").hidden = mode !== "signin";
+  $("emailField").hidden = mode === "reset";
+  $("tabs").hidden = mode === "reset";
+  document.querySelectorAll("#tabs button").forEach(tab => tab.setAttribute("aria-selected", tab.dataset.mode === mode));
+  say("");
+}
+
+function say(text, kind = "err") {
+  $("note").textContent = text;
+  $("note").className = "note " + kind;
+}
+
+const goToDashboard = () => location.replace("/");
+
+// Turn Supabase's messages into plain ones where they are unclear.
+function friendly(error) {
+  const text = error.message || String(error);
+  if (/invalid login credentials/i.test(text)) return "That email and password do not match an account.";
+  if (/email not confirmed/i.test(text)) return "Confirm your email first: open the link we sent you, then sign in.";
+  if (/already registered/i.test(text)) return "An account with that email already exists. Sign in instead.";
+  if (/failed to fetch|network/i.test(text)) return "Could not reach the sign-in service. Check your connection and try again.";
+  return text;
+}
+
+$("form").onsubmit = async event => {
+  event.preventDefault();
+  const email = $("email").value.trim(), password = $("password").value;
+  if (mode !== "reset" && !/^\S+@\S+\.\S+$/.test(email)) return say("Enter a valid email address."), $("email").focus();
+  if (password.length < 6) return say("The password needs at least 6 characters."), $("password").focus();
+
+  $("submit").disabled = true;
+  say("Working…", "ok");
+  try {
+    if (mode === "signin") {
+      const { error } = await client.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      goToDashboard();
+    } else if (mode === "signup") {
+      const { data, error } = await client.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + "/login.html" } });
+      if (error) throw error;
+      if (data.session) return goToDashboard();  // email confirmation is switched off in Supabase
+      setMode("signin");
+      say("Account created. Check your email for a confirmation link, then sign in.", "ok");
+    } else {
+      const { error } = await client.auth.updateUser({ password });
+      if (error) throw error;
+      goToDashboard();
+    }
+  } catch (error) {
+    say(friendly(error));
+  } finally {
+    $("submit").disabled = false;
+  }
+};
+
+$("forgot").onclick = async () => {
+  const email = $("email").value.trim();
+  if (!/^\S+@\S+\.\S+$/.test(email)) return say("Type your email above first, then choose Forgot password."), $("email").focus();
+  const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/login.html" });
+  say(error ? friendly(error) : "If that email has an account, a reset link is on its way.", error ? "err" : "ok");
+};
+
+$("tabs").onclick = event => {
+  const tab = event.target.closest("[data-mode]");
+  if (tab) setMode(tab.dataset.mode);
+};
+$("peek").onclick = () => {
+  const hidden = $("password").type === "password";
+  $("password").type = hidden ? "text" : "password";
+  $("peek").textContent = hidden ? "HIDE" : "SHOW";
+  $("peek").setAttribute("aria-label", hidden ? "Hide password" : "Show password");
+};
+
+// Theme follows the dashboard's saved choice, or the system.
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  $("themeToggle").textContent = theme === "dark" ? "Light mode" : "Dark mode";
+}
+let savedTheme = null;
+try { savedTheme = localStorage.getItem("theme"); } catch {}
+setTheme(savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+$("themeToggle").onclick = () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  try { localStorage.setItem("theme", next); } catch {}
+  setTheme(next);
+};
+
+// Slide the headline in word by word, keeping the italic word styled.
+$("headline").innerHTML = $("headline").innerHTML.replace(/(<em>)?([^\s<]+)(<\/em>)?/g,
+  (all, open = "", word, close = "") => `${open}<span class="w"><span>${word}</span></span>${close}`);
+document.querySelectorAll(".w>span").forEach((word, i) => word.style.animationDelay = i * 45 + "ms");
+
+async function start() {
+  try {
+    const config = await fetch("api/config").then(response => response.json());
+    if (!config.url) return goToDashboard();  // sign-in is switched off
+    client = supabase.createClient(config.url, config.key);
+  } catch {
+    return say("Could not reach the server. Start it with: python app.py");
+  }
+  client.auth.onAuthStateChange(event => {
+    if (event === "PASSWORD_RECOVERY") setMode("reset");  // arrived from a reset-password email
+  });
+  const { data } = await client.auth.getSession();
+  if (data.session && !location.hash.includes("type=recovery")) goToDashboard();  // already signed in
+}
+setMode("signin");
+start();
+</script></body></html>

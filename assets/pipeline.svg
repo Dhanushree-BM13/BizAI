@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="190" viewBox="0 0 1200 190" role="img" aria-labelledby="title">
+  <title id="title">How BizAI works: data from Supabase or a file is cleaned, forecast, back-tested, checked for unusual months, scored, then shown on the dashboard</title>
+  <style>
+    .bg{fill:#F3EEE3}.ink{fill:#17130E}.mute{fill:#6A6155}.acc{fill:#C2380F}
+    .box{fill:#F3EEE3;stroke:#17130E;stroke-width:1.5}.hot{stroke:#C2380F;stroke-width:2}
+    .wire{stroke:#17130E;stroke-width:1.5;stroke-dasharray:4 6;animation:flow 1.2s linear infinite}
+    @media (prefers-color-scheme:dark){.bg,.box{fill:#12100D}.box{stroke:#EFE7D8}.ink{fill:#EFE7D8}.mute{fill:#9D9385}.acc{fill:#FF6B3D}.hot{stroke:#FF6B3D}.wire{stroke:#EFE7D8}}
+    text{font-family:Georgia,'Times New Roman',serif}
+    .mono{font-family:'IBM Plex Mono',Consolas,'Courier New',monospace;letter-spacing:.12em}
+    .step{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+    .dot{animation:travel 7s linear infinite}
+    @keyframes rise{from{opacity:0;transform:translateY(16px)}}
+    @keyframes flow{to{stroke-dashoffset:-20}}
+    @keyframes travel{from{transform:translateX(0)}to{transform:translateX(1032px)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  <rect class="bg" width="1200" height="190"/>
+
+  <line class="wire" x1="60" y1="96" x2="1140" y2="96"/>
+  <circle class="acc dot" cx="84" cy="96" r="5"/>
+
+  <g class="step"><rect class="box" x="24" y="62" width="128" height="68"/>
+    <text class="mute mono" x="36" y="84" font-size="10">01</text>
+    <text class="ink" x="36" y="108" font-size="17">Supabase</text><text class="mute" x="36" y="124" font-size="12" font-style="italic">or uploaded file</text></g>
+  <g class="step" style="animation-delay:.1s"><rect class="box" x="196" y="62" width="128" height="68"/>
+    <text class="mute mono" x="208" y="84" font-size="10">02</text>
+    <text class="ink" x="208" y="108" font-size="17">Clean</text><text class="mute" x="208" y="124" font-size="12" font-style="italic">pandas</text></g>
+  <g class="step" style="animation-delay:.2s"><rect class="box" x="368" y="62" width="128" height="68"/>
+    <text class="mute mono" x="380" y="84" font-size="10">03</text>
+    <text class="ink" x="380" y="108" font-size="17">Forecast</text><text class="mute" x="380" y="124" font-size="12" font-style="italic">linear regression</text></g>
+  <g class="step" style="animation-delay:.3s"><rect class="box" x="540" y="62" width="128" height="68"/>
+    <text class="mute mono" x="552" y="84" font-size="10">04</text>
+    <text class="ink" x="552" y="108" font-size="17">Back-test</text><text class="mute" x="552" y="124" font-size="12" font-style="italic">MAPE vs naive</text></g>
+  <g class="step" style="animation-delay:.4s"><rect class="box hot" x="712" y="62" width="128" height="68"/>
+    <text class="acc mono" x="724" y="84" font-size="10">05</text>
+    <text class="ink" x="724" y="108" font-size="17">Anomalies</text><text class="mute" x="724" y="124" font-size="12" font-style="italic">isolation forest</text></g>
+  <g class="step" style="animation-delay:.5s"><rect class="box" x="884" y="62" width="128" height="68"/>
+    <text class="mute mono" x="896" y="84" font-size="10">06</text>
+    <text class="ink" x="896" y="108" font-size="17">Score</text><text class="mute" x="896" y="124" font-size="12" font-style="italic">health and advice</text></g>
+  <g class="step" style="animation-delay:.6s"><rect class="box" x="1056" y="62" width="120" height="68"/>
+    <text class="mute mono" x="1068" y="84" font-size="10">07</text>
+    <text class="ink" x="1068" y="108" font-size="17">Dashboard</text><text class="mute" x="1068" y="124" font-size="12" font-style="italic">live updates</text></g>
+
+  <text class="mute mono" x="24" y="34" font-size="11">HOW IT WORKS</text>
+  <text class="mute" x="24" y="166" font-size="14" font-style="italic">Every number on the dashboard is computed by analytics.py; the page only draws it.</text>
+</svg>

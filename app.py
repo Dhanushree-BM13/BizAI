@@ -1,11 +1,13 @@
 """BizAI web server: serves the dashboard and the analysis endpoints."""
 import json
 import os
+import time
+from functools import wraps
 from pathlib import Path
 from urllib.request import Request, urlopen
 
 import pandas as pd
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, g, jsonify, request, send_from_directory
 
 from analytics import analyse, clean, load
 
@@ -15,8 +17,8 @@ app = Flask(__name__, static_folder=str(BASE / "public"), static_url_path="")
 app.config["MAX_CONTENT_LENGTH"] = 4 * 1024 * 1024  # 4 MB: Vercel rejects request bodies over 4.5 MB
 app.config["USE_SUPABASE"] = True  # tests switch this off so they run without a network
 
-# Supabase project that holds the live data. The publishable key is meant to be public:
-# row level security on the table only lets it read. Never put the secret key here.
+# Supabase project that holds the data and the user accounts. The publishable key is meant to be
+# public: row level security only lets signed-in users read. Never put the secret key here.
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://pckkvrafahqelkwiyucv.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "sb_publishable_aZFg3JIGkQcQ2TcCu1T-5A_ApGCq5Wf")
 VIEW = "company_financials"    # what the app reads: companies joined to their months
@@ -24,15 +26,55 @@ TABLE = "monthly_financials"   # what the page listens to for live changes
 PAGE = 1000  # Supabase returns at most 1000 rows per request
 
 
-def load_live():
-    """Every row of the Supabase table, fetched a page at a time."""
+def supabase_headers(token):
+    """Headers for a Supabase request made on behalf of a signed-in user."""
+    return {"apikey": SUPABASE_KEY, "Authorization": f"Bearer {token}"}
+
+
+_verified = {}  # access token -> time it was last confirmed, so each request does not ask Supabase again
+
+
+def signed_in_token():
+    """The caller's Supabase access token if it belongs to a signed-in user, otherwise None."""
+    header = request.headers.get("Authorization", "")
+    token = header[len("Bearer "):] if header.startswith("Bearer ") else ""
+    if not token:
+        return None
+    if time.time() - _verified.get(token, 0) < 300:
+        return token
+    try:
+        with urlopen(Request(f"{SUPABASE_URL}/auth/v1/user", headers=supabase_headers(token)), timeout=10):
+            pass  # Supabase answers 200 only for a valid, unexpired session
+    except OSError:
+        return None
+    if len(_verified) > 1000:
+        _verified.clear()
+    _verified[token] = time.time()
+    return token
+
+
+def login_required(view):
+    """Reject requests from anyone not signed in. Skipped when Supabase is switched off (tests)."""
+    @wraps(view)
+    def wrapper(*args, **kwargs):
+        g.token = None
+        if app.config["USE_SUPABASE"]:
+            g.token = signed_in_token()
+            if not g.token:
+                return jsonify(error="Please sign in."), 401
+        return view(*args, **kwargs)
+    return wrapper
+
+
+def load_live(token):
+    """Every row of the Supabase view, fetched a page at a time as the signed-in user."""
     rows = []
     while True:
         url = (f"{SUPABASE_URL}/rest/v1/{VIEW}?select=company,industry,date,revenue,expenses,project_success"
                f"&order=id&limit={PAGE}&offset={len(rows)}")
         for attempt in range(3):  # the connection is occasionally dropped, so try again before giving up
             try:
-                with urlopen(Request(url, headers={"apikey": SUPABASE_KEY}), timeout=10) as response:
+                with urlopen(Request(url, headers=supabase_headers(token)), timeout=10) as response:
                     batch = json.load(response)
                 break
             except OSError:
@@ -43,11 +85,11 @@ def load_live():
             return pd.DataFrame(rows)
 
 
-def current_data():
+def current_data(token):
     """Rows to analyse and where they came from: Supabase, or the bundled CSV if Supabase is unreachable or empty."""
     if app.config["USE_SUPABASE"]:
         try:
-            live = load_live()
+            live = load_live(token)
             if len(live):
                 return live, "supabase"
         except Exception as problem:
@@ -72,8 +114,9 @@ def analyse_cached(rows):
 
 
 @app.get("/api/sample")
+@login_required
 def sample():
-    rows, source = current_data()
+    rows, source = current_data(g.token)
     response = jsonify(analyse_cached(rows))
     response.headers["X-Data-Source"] = source  # the page shows whether the data is live
     return response
@@ -81,7 +124,7 @@ def sample():
 
 @app.get("/api/config")
 def config():
-    """What the page needs to listen for live changes. Empty when Supabase is switched off."""
+    """What the pages need to sign in and listen for live changes. Empty when Supabase is switched off."""
     if not app.config["USE_SUPABASE"]:
         return jsonify({})
     return jsonify(url=SUPABASE_URL, key=SUPABASE_KEY, table=TABLE)
@@ -99,6 +142,7 @@ def too_large(_):
 
 
 @app.post("/api/analyze")
+@login_required
 def analyze():
     file = request.files.get("file")
     if not file:

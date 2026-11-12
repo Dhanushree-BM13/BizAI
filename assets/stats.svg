@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="170" viewBox="0 0 1200 170" role="img" aria-labelledby="title">
+  <title id="title">40 companies, 2,400 company months, 1.49% median forecast error, model beats the baseline for 40 of 40 companies</title>
+  <style>
+    .bg{fill:#F3EEE3}.ink{fill:#17130E}.mute{fill:#6A6155}.acc{fill:#C2380F}.rule{stroke:#17130E}.soft{stroke:#17130E;opacity:.18}
+    @media (prefers-color-scheme:dark){.bg{fill:#12100D}.ink{fill:#EFE7D8}.mute{fill:#9D9385}.acc{fill:#FF6B3D}.rule,.soft{stroke:#EFE7D8}}
+    text{font-family:Georgia,'Times New Roman',serif}
+    .mono{font-family:'IBM Plex Mono',Consolas,'Courier New',monospace;letter-spacing:.12em}
+    .stat{animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+    .bar{transform-box:fill-box;transform-origin:left;animation:grow 1.4s cubic-bezier(.6,0,.2,1) both}
+    @keyframes rise{from{opacity:0;transform:translateY(22px)}}
+    @keyframes grow{from{transform:scaleX(0)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  <rect class="bg" width="1200" height="170"/>
+  <line class="rule" x1="40" y1="20" x2="1160" y2="20"/>
+  <line class="soft" x1="320" y1="40" x2="320" y2="150"/>
+  <line class="soft" x1="600" y1="40" x2="600" y2="150"/>
+  <line class="soft" x1="880" y1="40" x2="880" y2="150"/>
+
+  <g class="stat">
+    <text class="mute mono" x="40" y="54" font-size="12">COMPANIES</text>
+    <text class="ink" x="40" y="118" font-size="64">40</text>
+    <text class="mute" x="40" y="146" font-size="16" font-style="italic">across 37 industries</text>
+  </g>
+  <g class="stat" style="animation-delay:.15s">
+    <text class="mute mono" x="340" y="54" font-size="12">COMPANY MONTHS</text>
+    <text class="ink" x="340" y="118" font-size="64">2,400</text>
+    <text class="mute" x="340" y="146" font-size="16" font-style="italic">five years, live from Supabase</text>
+  </g>
+  <g class="stat" style="animation-delay:.3s">
+    <text class="mute mono" x="620" y="54" font-size="12">MEDIAN FORECAST ERROR</text>
+    <text class="acc" x="620" y="118" font-size="64">1.49%</text>
+    <text class="mute" x="620" y="146" font-size="16" font-style="italic">against 5.51% for a naive guess</text>
+  </g>
+  <g class="stat" style="animation-delay:.45s">
+    <text class="mute mono" x="900" y="54" font-size="12">BEATS THE BASELINE</text>
+    <text class="ink" x="900" y="118" font-size="64">40<tspan class="mute" font-size="30"> / 40</tspan></text>
+    <rect class="acc bar" x="900" y="136" width="260" height="5" style="animation-delay:.8s"/>
+  </g>
+</svg>
