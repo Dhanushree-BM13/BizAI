@@ -78,6 +78,8 @@ def test_server_endpoints():
     assert client.get("/api/sample").headers["X-Data-Source"] == "csv" and client.get("/api/config").get_json() == {}
     assert client.get("/api/sample.csv").data.startswith(b"Date,Company")
     assert client.post("/api/analyze").status_code == 400
+    big = client.post("/api/analyze", data={"file": (io.BytesIO(b"x" * (5 * 1024 * 1024)), "big.csv")})
+    assert big.status_code == 413 and "4 MB" in big.get_json()["error"]
     bad = client.post("/api/analyze", data={"file": (io.BytesIO(b"a,b\n1,2\n"), "bad.csv")})
     assert bad.status_code == 400 and "Missing columns" in bad.get_json()["error"]
     good = client.post("/api/analyze", data={"file": (io.BytesIO(build().to_csv(index=False).encode()), "ok.csv")})

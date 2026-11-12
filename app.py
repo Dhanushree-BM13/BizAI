@@ -10,8 +10,9 @@ from flask import Flask, jsonify, request, send_from_directory
 from analytics import analyse, clean, load
 
 BASE = Path(__file__).parent  # so the app works from any working directory
-app = Flask(__name__, static_folder=str(BASE / "static"))
-app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10 MB upload limit
+# The page lives in public/, which Vercel serves from its CDN. Locally Flask serves it instead.
+app = Flask(__name__, static_folder=str(BASE / "public"), static_url_path="")
+app.config["MAX_CONTENT_LENGTH"] = 4 * 1024 * 1024  # 4 MB: Vercel rejects request bodies over 4.5 MB
 app.config["USE_SUPABASE"] = True  # tests switch this off so they run without a network
 
 # Supabase project that holds the live data. The publishable key is meant to be public:
@@ -90,6 +91,11 @@ def config():
 def sample_file():
     """Lets users download the demo file to see the expected columns."""
     return send_from_directory(BASE, "financial_data.csv", as_attachment=True)
+
+
+@app.errorhandler(413)
+def too_large(_):
+    return jsonify(error="That file is over 4 MB. Upload a smaller CSV or Excel file."), 413
 
 
 @app.post("/api/analyze")

@@ -11,6 +11,17 @@ recommendations, a league table and a question box. Data comes live from Supabas
     python app.py              # open http://127.0.0.1:5000
     python test_analytics.py   # 8 checks of the analysis and the server
 
+## Deploy to Vercel
+1. Go to [vercel.com/new](https://vercel.com/new) and import the GitHub repository `Dhanushree-BM13/BizAI`.
+2. Leave every setting as it is and click **Deploy**. Vercel finds the Flask `app` in `app.py`,
+   installs `requirements.txt` with Python 3.12 (`.python-version`) and serves `public/` from its CDN.
+3. Optional: under **Settings → Environment Variables** set `SUPABASE_URL` and `SUPABASE_KEY` to point
+   at another Supabase project. Without them the app uses the project below.
+
+Every push to `main` deploys again. `vercel.json` gives the function 60 seconds, enough for the first
+request after a cold start, and leaves tests and scripts out of the bundle. Uploads are limited to 4 MB
+because Vercel rejects request bodies over 4.5 MB.
+
 ## Live data (Supabase)
 1. In the Supabase **SQL Editor**, run `supabase/schema.sql`. It creates the database (see below).
 2. Then run `supabase/seed.sql`. It loads the 40 demo companies. The monthly rows are computed inside
@@ -49,7 +60,7 @@ password are never needed by the app and must never be put in this repository.
 ## Files
 - `analytics.py` – all the analysis. The page only draws what this returns.
 - `app.py` – Flask server: `GET /api/sample` (live or bundled data), `POST /api/analyze` (file upload, 10 MB limit).
-- `static/index.html` – the dashboard and the question box.
+- `public/index.html` – the dashboard and the question box.
 - `supabase/schema.sql` – the database: tables, constraints, view, security, realtime.
 - `generate_data.py` – builds the demo data: `financial_data.csv` and `supabase/seed.sql`.
 - `test_analytics.py` – tests.
@@ -74,7 +85,7 @@ the most isolated 30%. The report then says whether expenses or revenue moved fu
 stability 15%, cost control 10%. The weights are a design choice (profit first, then growth), not learned from data.
 Delivery is left out when the file has no project-success column.
 
-**Ask BizAI.** A rule-based answerer in `static/index.html`. It looks in the question for company names, a measure
+**Ask BizAI.** A rule-based answerer in `public/index.html`. It looks in the question for company names, a measure
 (revenue, margin, growth, health...), a month and the kind of question, then fills in an answer from the analysis.
 It can report a figure for any company or month, rank and compare companies, explain a health score and run
 what-if scenarios. It is not a language model and says so when it cannot match a question.
